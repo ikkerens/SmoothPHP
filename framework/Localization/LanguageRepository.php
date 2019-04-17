@@ -12,6 +12,8 @@
 
 namespace SmoothPHP\Framework\Localization;
 
+use Locale;
+use RuntimeException;
 use SmoothPHP\Framework\Core\Kernel;
 
 class LanguageRepository {
@@ -34,7 +36,7 @@ class LanguageRepository {
 		foreach ($this->sources as $source)
 			$languages = array_merge($languages, $source->getAvailableLanguages());
 		if (!in_array($language, $languages))
-			throw new \RuntimeException("Language '" . $language . "' could not be found.");
+			throw new RuntimeException("Language '" . $language . "' could not be found.");
 
 		$_SESSION[self::SESSION_KEY] = $language;
 		return true;
@@ -74,8 +76,8 @@ class LanguageRepository {
 			if (!isset($_SERVER['HTTP_ACCEPT_LANGUAGE']))
 				$language = $this->kernel->getConfig()->default_language;
 			else
-				$language = \Locale::lookup($languages,
-					\Locale::acceptFromHttp($_SERVER['HTTP_ACCEPT_LANGUAGE']),
+				$language = Locale::lookup($languages,
+					Locale::acceptFromHttp($_SERVER['HTTP_ACCEPT_LANGUAGE']),
 					true,
 					$this->kernel->getConfig()->default_language);
 		}

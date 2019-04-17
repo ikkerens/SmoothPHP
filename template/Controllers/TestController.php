@@ -16,6 +16,7 @@ use SmoothPHP\Framework\Cache\Assets\AssetsRegister;
 use SmoothPHP\Framework\Core\Abstracts\Controller;
 use SmoothPHP\Framework\Core\Kernel;
 use SmoothPHP\Framework\Flow\Requests\Request;
+use Test\Model\TestUser;
 
 class TestController extends Controller {
 
@@ -50,7 +51,7 @@ class TestController extends Controller {
 	}
 
 	public function avatar(AuthenticationManager $auth, AssetsRegister $assets) {
-		/* @var \Test\Model\TestUser */
+		/* @var TestUser */
 		$user = $auth->getActiveUser();
 
 		if (!$user->avatar)

@@ -12,8 +12,8 @@
 
 namespace SmoothPHP\Framework\Cache\Assets;
 
-use SmoothPHP\Framework\Core\Lock;
 use SmoothPHP\Framework\Cache\Builder\FileCacheProvider;
+use SmoothPHP\Framework\Core\Lock;
 
 class ImageCache {
 	private $cacheFileFormat;

@@ -12,6 +12,7 @@
 
 namespace SmoothPHP\Framework\Forms;
 
+use RuntimeException;
 use SmoothPHP\Framework\Forms\Containers\FormContainer;
 use SmoothPHP\Framework\Forms\Containers\Type;
 use SmoothPHP\Framework\Forms\Types as Types;
@@ -30,7 +31,7 @@ class FormBuilder {
 	 */
 	public function add($field, $type = null, array $options = []) {
 		if (isset($this->options[$field]))
-			throw new \RuntimeException("Form field has already been declared.");
+			throw new RuntimeException("Form field has already been declared.");
 
 		$this->options[$field] = array_merge_recursive([
 			'field' => $field,

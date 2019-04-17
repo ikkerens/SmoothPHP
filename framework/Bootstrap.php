@@ -10,10 +10,10 @@
  * Bootstrap.php
  */
 
-use SmoothPHP\Framework\Core\Kernel;
+use SmoothPHP\Framework\Cache\Builder\RuntimeCacheProvider;
 use SmoothPHP\Framework\Core\Abstracts\WebPrototype;
 use SmoothPHP\Framework\Core\ClassLoader\BasicClassLoader;
-use SmoothPHP\Framework\Cache\Builder\RuntimeCacheProvider;
+use SmoothPHP\Framework\Core\Kernel;
 
 if (__ENV__ != 'prod') {
 	ini_set('display_errors', '1');

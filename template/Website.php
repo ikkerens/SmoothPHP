@@ -14,6 +14,7 @@ use SmoothPHP\Framework\Core\Abstracts\WebPrototype;
 use SmoothPHP\Framework\Core\Kernel;
 use SmoothPHP\Framework\Flow\Responses\HTMLResponse;
 use SmoothPHP\Framework\Flow\Routing\RouteDatabase;
+use Test\Controllers as Controllers;
 use Test\Model\Response\AvatarResponse;
 use Test\Model\TestUser;
 
@@ -49,7 +50,7 @@ class Website extends WebPrototype {
 		$routes->register([
 			'name'       => 'front_login',
 			'path'       => '/',
-			'controller' => \Test\Controllers\TestController::class,
+			'controller' => Controllers\TestController::class,
 			'call'       => 'login',
 			'method'     => ['GET', 'POST']
 		]);
@@ -57,7 +58,7 @@ class Website extends WebPrototype {
 		$routes->register([
 			'name'       => 'register',
 			'path'       => '/register',
-			'controller' => \Test\Controllers\RegisterController::class,
+			'controller' => Controllers\RegisterController::class,
 			'call'       => 'register',
 			'method'     => ['GET', 'POST']
 		]);
@@ -65,7 +66,7 @@ class Website extends WebPrototype {
 		$routes->register([
 			'name'           => 'secure',
 			'path'           => '/secure',
-			'controller'     => \Test\Controllers\TestController::class,
+			'controller'     => Controllers\TestController::class,
 			'call'           => 'secure',
 			'authentication' => true
 		]);
@@ -73,7 +74,7 @@ class Website extends WebPrototype {
 		$routes->register([
 			'name'           => 'avatar',
 			'path'           => '/avatar.png',
-			'controller'     => \Test\Controllers\TestController::class,
+			'controller'     => Controllers\TestController::class,
 			'call'           => 'avatar',
 			'authentication' => true,
 			'content-type'   => AvatarResponse::class
@@ -82,7 +83,7 @@ class Website extends WebPrototype {
 		$routes->register([
 			'name'           => 'logout',
 			'path'           => '/logout',
-			'controller'     => \Test\Controllers\TestController::class,
+			'controller'     => Controllers\TestController::class,
 			'call'           => 'logout',
 			'authentication' => true
 		]);

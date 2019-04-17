@@ -12,6 +12,7 @@
 
 namespace SmoothPHP\Framework\Authentication;
 
+use RuntimeException;
 use SmoothPHP\Framework\Authentication\Sessions\ActiveSession;
 use SmoothPHP\Framework\Authentication\Sessions\LoginSession;
 use SmoothPHP\Framework\Authentication\Sessions\LongLivedSession;
@@ -90,7 +91,7 @@ class AuthenticationManager {
 
 	public function addAuthenticationScheme($scheme, $callable) {
 		if (!is_callable($callable))
-			throw new \RuntimeException('Passed $callable is not callable');
+			throw new RuntimeException('Passed $callable is not callable');
 		$this->authSchemes[$scheme] = $callable;
 	}
 
@@ -98,7 +99,7 @@ class AuthenticationManager {
 		$classDef = new \ReflectionClass($clazz);
 
 		if (!$classDef->isSubclassOf(User::class))
-			throw new \RuntimeException('Class ' . $clazz . ' does not derive from ' . User::class);
+			throw new RuntimeException('Class ' . $clazz . ' does not derive from ' . User::class);
 
 		global $kernel;
 		$this->userMap = $kernel->getDatabase()->map($clazz);
@@ -272,7 +273,7 @@ class AuthenticationManager {
 		$args = func_get_args();
 
 		if (!isset($args[0]))
-			throw new \RuntimeException('AuthenticationManager#canGo(...) called with no arguments, requires at least 1.');
+			throw new RuntimeException('AuthenticationManager#canGo(...) called with no arguments, requires at least 1.');
 
 		global $kernel;
 		$route = $kernel->getRouteDatabase()->getRoute($args[0]);

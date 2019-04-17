@@ -12,6 +12,7 @@
 
 namespace SmoothPHP\Framework\Flow\Requests;
 
+use ReflectionClass;
 use SmoothPHP\Framework\Core\Abstracts\Controller;
 use SmoothPHP\Framework\Flow\Responses\FileStream;
 use SmoothPHP\Framework\Flow\Responses\PlainTextResponse;
@@ -38,7 +39,7 @@ class Robots extends Controller {
 	}
 
 	public function getRobots(Request $request, RouteDatabase $db) {
-		$md5 = md5_file((new \ReflectionClass(new \Website()))->getFileName());
+		$md5 = md5_file((new ReflectionClass(new \Website()))->getFileName());
 		$cacheFile = sprintf(self::CACHE_FILE_FORMAT, $md5);
 
 		if (!file_exists($cacheFile)) {

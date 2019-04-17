@@ -12,6 +12,8 @@
 
 namespace SmoothPHP\Framework\Flow\Responses;
 
+use DOMDocument;
+use DOMElement;
 use SmoothPHP\Framework\Core\Kernel;
 use SmoothPHP\Framework\Flow\Requests\Request;
 
@@ -31,7 +33,7 @@ class XML extends Response implements AlternateErrorResponse {
 	public function build(Kernel $kernel, Request $request) {
 		if (is_array($this->controllerResponse))
 			$this->built = self::fromArray($this->controllerResponse)->saveXML();
-		else if ($this->controllerResponse instanceof \DOMDocument)
+		else if ($this->controllerResponse instanceof DOMDocument)
 			$this->built = $this->controllerResponse->saveXML();
 		else
 			throw new \InvalidArgumentException('Returned controller response is not an array or DOMDocument.');
@@ -47,18 +49,18 @@ class XML extends Response implements AlternateErrorResponse {
 	}
 
 	public static function fromArray(array $arrayDoc) {
-		$doc = new \DOMDocument('1.0', 'UTF-8');
+		$doc = new DOMDocument('1.0', 'UTF-8');
 		self::transformArrayToDOMNode($doc, $doc, $arrayDoc);
 		return $doc;
 	}
 
-	private static function transformArrayToDOMNode(\DOMDocument $doc, \DOMNode $parent, array &$array) {
+	private static function transformArrayToDOMNode(DOMDocument $doc, \DOMNode $parent, array &$array) {
 		foreach ($array as $key => $value) {
 			self::createElement($doc, $parent, $key, $value);
 		}
 	}
 
-	private static function createElement(\DOMDocument $doc, \DOMNode $parent, $key, $value) {
+	private static function createElement(DOMDocument $doc, \DOMNode $parent, $key, $value) {
 		$elementArguments = [];
 		$method = 'createElement';
 		if (is_array($value) && isset($value['_namespace'])) {
@@ -73,7 +75,7 @@ class XML extends Response implements AlternateErrorResponse {
 			if (!is_array($value))
 				$elementArguments[] = $value;
 
-			/* @var $element \DOMElement */
+			/* @var $element DOMElement */
 			$element = call_user_func_array([$doc, $method], $elementArguments);
 
 			if (is_array($value)) {

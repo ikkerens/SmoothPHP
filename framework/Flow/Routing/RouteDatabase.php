@@ -12,6 +12,8 @@
 
 namespace SmoothPHP\Framework\Flow\Routing;
 
+use Exception;
+use LogicException;
 use SmoothPHP\Framework\Core\Abstracts\Controller;
 use SmoothPHP\Framework\Core\Kernel;
 use SmoothPHP\Framework\Flow\Requests\Request;
@@ -60,7 +62,7 @@ class RouteDatabase {
 				$pathPart = $path[$i];
 
 				if ($pathPart == self::VARARGS_INPUT && $i < (count($path) - 1))
-					throw new \LogicException("Route varargs can only be used at the end of the path");
+					throw new LogicException("Route varargs can only be used at the end of the path");
 
 				if (!isset($currentRecursive[$pathPart]))
 					$currentRecursive[$pathPart] = [];
@@ -87,7 +89,7 @@ class RouteDatabase {
 
 	/**
 	 * @param $request Request $request->server->REQUEST_URI and $request->server->REQUEST_METHOD are used to determine the route.
-	 * @return \SmoothPHP\Framework\Flow\Routing\ResolvedRoute|bool
+	 * @return ResolvedRoute|bool
 	 */
 	public function resolve(Request $request) {
 		// Clean the URL of extra arguments
@@ -197,11 +199,11 @@ class RouteDatabase {
 
 	private function validateRoute(array $args) {
 		if (count($args) < 1)
-			throw new \Exception('RouteDatabase#buildPath(...) called with no arguments, requires at least 1.');
+			throw new Exception('RouteDatabase#buildPath(...) called with no arguments, requires at least 1.');
 
 		$route = $this->getRoute($args[0]);
 		if (!$route)
-			throw new \Exception(sprintf('Route \'%s\' does not exist.', $args[0]));
+			throw new Exception(sprintf('Route \'%s\' does not exist.', $args[0]));
 
 		return [$route, array_slice($args, 1)];
 	}
@@ -218,12 +220,12 @@ class RouteDatabase {
 					$path = preg_replace('/' . preg_quote(self::VARARGS_INPUT, '/') . '/', $varArgs, $path);
 					break;
 				} else
-					throw new \Exception(sprintf('Not enough arguments given, route \'%s\' requested argument %d, %d given.', $route['name'], $i, count($args)));
+					throw new Exception(sprintf('Not enough arguments given, route \'%s\' requested argument %d, %d given.', $route['name'], $i, count($args)));
 			}
 		}
 
 		if (strpos($path, self::WILDCARD_INPUT) !== false || strpos($path, self::VARARGS_INPUT) !== false)
-			throw new \Exception('Not enough arguments given to path.');
+			throw new Exception('Not enough arguments given to path.');
 
 		return $path;
 	}

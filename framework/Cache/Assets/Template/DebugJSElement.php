@@ -13,10 +13,7 @@
 namespace SmoothPHP\Framework\Cache\Assets\Template;
 
 use SmoothPHP\Framework\Templates\Compiler\CompilerState;
-use SmoothPHP\Framework\Templates\Compiler\TemplateLexer;
-use SmoothPHP\Framework\Templates\Elements\Chain;
 use SmoothPHP\Framework\Templates\Elements\Element;
-use SmoothPHP\Framework\Templates\TemplateCompiler;
 
 class DebugJSElement extends Element {
 

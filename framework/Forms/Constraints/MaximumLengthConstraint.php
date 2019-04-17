@@ -12,8 +12,8 @@
 
 namespace SmoothPHP\Framework\Forms\Constraints;
 
-use SmoothPHP\Framework\Forms\Constraint;
 use SmoothPHP\Framework\Flow\Requests\Request;
+use SmoothPHP\Framework\Forms\Constraint;
 use SmoothPHP\Framework\Forms\Form;
 
 class MaximumLengthConstraint extends Constraint {

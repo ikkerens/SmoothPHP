@@ -13,8 +13,8 @@
 namespace SmoothPHP\Framework\Authentication\Sessions;
 
 use SmoothPHP\Framework\Authentication\UserTypes\User;
-use SmoothPHP\Framework\Database\Mapper\MappedDBObject;
 use SmoothPHP\Framework\Database\Mapper\DBObjectMapper;
+use SmoothPHP\Framework\Database\Mapper\MappedDBObject;
 
 class LongLivedSession extends MappedDBObject {
 
@@ -55,11 +55,11 @@ class LongLivedSession extends MappedDBObject {
 
 		global $kernel;
 		setcookie(self::SESSION_KEY, sprintf('%s:%s', $this->selector, base64_encode($validator)),
-				time() + $kernel->getConfig()->authentication_longlived_age,
-				'/', // This cookie applies to all sub-paths
-				cookie_domain(), // Apply it to this host and all its subdomains
-				false, // This cookie does not require HTTPS
-				false); // This cookie can be transferred over non-HTTP
+			time() + $kernel->getConfig()->authentication_longlived_age,
+			'/', // This cookie applies to all sub-paths
+			cookie_domain(), // Apply it to this host and all its subdomains
+			false, // This cookie does not require HTTPS
+			false); // This cookie can be transferred over non-HTTP
 	}
 
 	public static function readCookie(DBObjectMapper $map) {
@@ -71,7 +71,7 @@ class LongLivedSession extends MappedDBObject {
 
 			/* @var $session LongLivedSession */
 			$session = $map->fetch([
-					'selector' => $cookie[0]
+				'selector' => $cookie[0]
 			]);
 
 			if (!$session)

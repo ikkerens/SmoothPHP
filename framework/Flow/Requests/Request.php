@@ -12,6 +12,7 @@
 
 namespace SmoothPHP\Framework\Flow\Requests;
 
+use Exception;
 use SmoothPHP\Framework\Flow\Requests\Files\FileSource;
 
 /**
@@ -25,7 +26,7 @@ class Request {
 	public $meta;
 
 	/**
-	 * @return \SmoothPHP\Framework\Flow\Requests\Request
+	 * @return Request
 	 */
 	public static function createFromGlobals() {
 		return new Request($_GET, $_POST, $_SERVER, $_FILES);
@@ -42,7 +43,7 @@ class Request {
 	/**
 	 * @param $scope
 	 * @return VariableSource
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	public function __get($scope) {
 		switch ($scope) {
@@ -52,7 +53,7 @@ class Request {
 			case "files":
 				return $this->{$scope . 'r'};
 			default:
-				throw new \Exception("Invalid scope.");
+				throw new Exception("Invalid scope.");
 		}
 	}
 

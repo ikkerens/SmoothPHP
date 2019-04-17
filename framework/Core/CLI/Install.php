@@ -62,7 +62,7 @@ class Install extends Command {
 			printf('Skipping query file %s...' . PHP_EOL, $file);
 			return;
 		}
-		
+
 		$engines = Database::$engines;
 		if (($key = array_search(get_class($db->getEngine()), $engines)) !== false) {
 			unset($engines[$key]);

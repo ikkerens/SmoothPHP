@@ -12,6 +12,8 @@
 
 namespace SmoothPHP\Framework\Core\ClassLoader;
 
+use RuntimeException;
+
 require_once __DIR__ . '/ClassLoader.php';
 
 class BasicClassLoader implements ClassLoader {
@@ -25,7 +27,7 @@ class BasicClassLoader implements ClassLoader {
 
 	public function addPrefix($namespace, $path) {
 		if (!is_dir($path))
-			throw new \RuntimeException(sprintf('\'%s\' is not a valid class path', $path));
+			throw new RuntimeException(sprintf('\'%s\' is not a valid class path', $path));
 
 		if (substr($namespace, 0, 1) == '\\')
 			$namespace = substr($namespace, 1);

@@ -41,7 +41,7 @@ class MySQL extends PDOEngine {
 			print('Dropping constraints...' . PHP_EOL);
 			$constraintsStmt = $this->connection->query("SELECT DISTINCT
 			    CONCAT('ALTER TABLE `',
-			            K.TABLE_NAME,
+			            K.TABLE_NAME,ó
 			            '` DROP FOREIGN KEY `',
 			            K.CONSTRAINT_NAME,
 			            '`;') AS query
@@ -53,7 +53,7 @@ class MySQL extends PDOEngine {
 			    K.REFERENCED_TABLE_SCHEMA = " . $this->connection->quote($kernel->getConfig()->db_database));
 
 			$constraints = $constraintsStmt->fetchAll();
-			foreach($constraints as $constraint) {
+			foreach ($constraints as $constraint) {
 				printf('Executing: %s' . PHP_EOL, $constraint['query']);
 				$this->connection->exec($constraint['query']);
 			}
@@ -68,7 +68,7 @@ class MySQL extends PDOEngine {
 			    table_schema = " . $this->connection->quote($kernel->getConfig()->db_database));
 
 			$databases = $databasesStmt->fetchAll();
-			foreach($databases as $database) {
+			foreach ($databases as $database) {
 				printf('Executing: %s' . PHP_EOL, $database['query']);
 				$this->connection->exec($database['query']);
 			}

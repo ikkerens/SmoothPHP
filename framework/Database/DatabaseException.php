@@ -12,5 +12,7 @@
 
 namespace SmoothPHP\Framework\Database;
 
-class DatabaseException extends \Exception {
+use Exception;
+
+class DatabaseException extends Exception {
 }

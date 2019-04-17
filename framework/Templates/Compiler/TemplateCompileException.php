@@ -12,5 +12,7 @@
 
 namespace SmoothPHP\Framework\Templates\Compiler;
 
-class TemplateCompileException extends \Exception {
+use Exception;
+
+class TemplateCompileException extends Exception {
 }

@@ -12,6 +12,7 @@
 
 namespace SmoothPHP\Framework\Cache\Assets\Template;
 
+use SmoothPHP\Framework\Cache\Assets\AssetsRegister;
 use SmoothPHP\Framework\Core\Lock;
 use SmoothPHP\Framework\Templates\Compiler\CompilerState;
 use SmoothPHP\Framework\Templates\Compiler\TemplateLexer;
@@ -36,7 +37,7 @@ class CSSElement extends Element {
 	}
 
 	public function output(CompilerState $tpl) {
-		/* @var $assetsRegister \SmoothPHP\Framework\Cache\Assets\AssetsRegister */
+		/* @var $assetsRegister AssetsRegister */
 		$assetsRegister = $tpl->vars->assets->getValue();
 
 		$files = [];

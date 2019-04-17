@@ -12,11 +12,9 @@
 
 namespace SmoothPHP\Framework\Cache\Assets\Template;
 
+use SmoothPHP\Framework\Cache\Assets\AssetsRegister;
 use SmoothPHP\Framework\Templates\Compiler\CompilerState;
-use SmoothPHP\Framework\Templates\Compiler\TemplateLexer;
-use SmoothPHP\Framework\Templates\Elements\Chain;
 use SmoothPHP\Framework\Templates\Elements\Element;
-use SmoothPHP\Framework\Templates\TemplateCompiler;
 
 class DebugCSSElement extends Element {
 
@@ -26,7 +24,7 @@ class DebugCSSElement extends Element {
 
 	public function output(CompilerState $tpl) {
 		global $kernel;
-		/* @var $assetsRegister \SmoothPHP\Framework\Cache\Assets\AssetsRegister */
+		/* @var $assetsRegister AssetsRegister */
 		$assetsRegister = $tpl->vars->assets->getValue();
 		foreach (array_unique($assetsRegister->getCSSFiles()) as $css) {
 			if (strtolower(substr($css, 0, 4)) != 'http')

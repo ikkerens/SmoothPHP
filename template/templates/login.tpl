@@ -10,6 +10,5 @@
         {/if}
     </ul>
     {$form}
-
     <p>Alternatively you can register <a href="{$route->buildPath('register')}">here</a>.</p>
 {/block}

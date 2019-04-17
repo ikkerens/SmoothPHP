@@ -16,7 +16,6 @@ use SmoothPHP\Framework\Core\Kernel;
 use SmoothPHP\Framework\Flow\Requests\Request;
 use SmoothPHP\Framework\Flow\Responses\RedirectResponse;
 use SmoothPHP\Framework\Flow\Responses\Response;
-use SmoothPHP\Framework\Flow\Responses\TemplateResponse;
 
 class ResolvedRoute {
 	private $route;

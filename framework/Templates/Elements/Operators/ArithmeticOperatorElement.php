@@ -70,7 +70,7 @@ abstract class ArithmeticOperatorElement extends Element {
 					$chain->addElement(new FunctionOperatorElement($command->readAlphaNumeric(), $args));
 					return;
 				}
- 			case '=':
+			case '=':
 				if ($command->peek('=')) {
 					$op = new EqualsOperatorElement();
 					break;

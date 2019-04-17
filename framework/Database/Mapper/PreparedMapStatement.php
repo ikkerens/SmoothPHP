@@ -12,9 +12,11 @@
 
 namespace SmoothPHP\Framework\Database\Mapper;
 
+use SmoothPHP\Framework\Database\Statements\SQLStatement;
+
 class PreparedMapStatement {
 	public $params, $references;
-	/* @var $statement \SmoothPHP\Framework\Database\Statements\SQLStatement */
+	/* @var $statement SQLStatement */
 	public $statement;
 
 	public function __construct() {

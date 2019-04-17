@@ -39,8 +39,8 @@ class VariableElement extends Element {
 	}
 
 	public function output(CompilerState $tpl) {
-	    if (!isset($tpl->vars->{$this->varName}))
-	        throw new TemplateCompileException("Variable '" . $this->varName . "' not set.");
+		if (!isset($tpl->vars->{$this->varName}))
+			throw new TemplateCompileException("Variable '" . $this->varName . "' not set.");
 
 		$tpl->vars->{$this->varName}->output($tpl);
 	}

@@ -12,6 +12,7 @@
 
 namespace SmoothPHP\Framework\Database\Mapper;
 
+use ReflectionClass;
 use SmoothPHP\Framework\Database\Database;
 use SmoothPHP\Framework\Database\DatabaseException;
 use SmoothPHP\Framework\Database\Engines\MySQL;
@@ -33,7 +34,7 @@ class DBObjectMapper {
 		$engine = $this->db->getEngine();
 
 		$this->className = $clazz;
-		$this->classDef = new \ReflectionClass($clazz);
+		$this->classDef = new ReflectionClass($clazz);
 
 		if (!$this->classDef->isSubclassOf(MappedDBObject::class))
 			throw new DatabaseException("Attempting to map an object that is not a subclass of MappedDBObject");
@@ -121,7 +122,7 @@ class DBObjectMapper {
 	}
 
 	public function __wakeup() {
-		$this->classDef = new \ReflectionClass($this->className);
+		$this->classDef = new ReflectionClass($this->className);
 		$this->fields = array_filter(array_map(function (\ReflectionProperty $field) {
 			if ($field->isStatic())
 				return null;

@@ -12,8 +12,9 @@
 
 namespace SmoothPHP\Framework\Forms\Constraints;
 
-use SmoothPHP\Framework\Forms\Constraint;
+use RuntimeException;
 use SmoothPHP\Framework\Flow\Requests\Request;
+use SmoothPHP\Framework\Forms\Constraint;
 use SmoothPHP\Framework\Forms\Form;
 
 class IdenticalConstraint extends Constraint {
@@ -28,7 +29,7 @@ class IdenticalConstraint extends Constraint {
 
 	public function checkConstraint(Request $request, $name, $label, $value, Form $form) {
 		if (!$form->hasField($this->fieldName))
-			throw new \RuntimeException('Attempted to compare form field but that field does not exist.');
+			throw new RuntimeException('Attempted to compare form field but that field does not exist.');
 
 		if ($value != $request->post->{$this->fieldName})
 			$form->addErrorMessage('');

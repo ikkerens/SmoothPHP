@@ -13,6 +13,7 @@ namespace Test\Controllers;
 
 use SmoothPHP\Framework\Core\Abstracts\Controller;
 use SmoothPHP\Framework\Core\Kernel;
+use SmoothPHP\Framework\Database\Mapper\DBObjectMapper;
 use SmoothPHP\Framework\Flow\Requests\Request;
 use SmoothPHP\Framework\Forms\Constraints\FileImageConstraint;
 use SmoothPHP\Framework\Forms\Constraints\FileImageMaximumSizeConstraint;
@@ -31,7 +32,7 @@ use Test\Model\TestUser;
 class RegisterController extends Controller {
 	/* @var Form */
 	private $registerForm;
-	/* @var \SmoothPHP\Framework\Database\Mapper\DBObjectMapper */
+	/* @var DBObjectMapper */
 	private $userMap;
 
 	public function onInitialize(Kernel $kernel) {

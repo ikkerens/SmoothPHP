@@ -12,6 +12,7 @@
 
 namespace SmoothPHP\Framework\Forms\Containers;
 
+use RuntimeException;
 use SmoothPHP\Framework\Flow\Requests\Request;
 use SmoothPHP\Framework\Forms\Constraint;
 use SmoothPHP\Framework\Forms\Form;
@@ -40,7 +41,7 @@ class FormContainer extends Constraint {
 			if (method_exists($sub, $method))
 				return call_user_func_array([$sub, $method], $args);
 
-		throw new \RuntimeException(sprintf('The method %s::%s does not exist.', __CLASS__, $method));
+		throw new RuntimeException(sprintf('The method %s::%s does not exist.', __CLASS__, $method));
 	}
 
 	public function __toString() {

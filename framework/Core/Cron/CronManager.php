@@ -15,7 +15,7 @@ namespace SmoothPHP\Framework\Core\Cron;
 use SmoothPHP\Framework\Core\Kernel;
 
 class CronManager {
-	/* @var \SmoothPHP\Framework\Core\Cron\CronHandler */
+	/* @var CronHandler */
 	private $handler;
 	private $jobs;
 

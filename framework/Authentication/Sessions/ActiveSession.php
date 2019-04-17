@@ -13,8 +13,8 @@
 namespace SmoothPHP\Framework\Authentication\Sessions;
 
 use SmoothPHP\Framework\Authentication\UserTypes\User;
-use SmoothPHP\Framework\Database\Mapper\MappedDBObject;
 use SmoothPHP\Framework\Database\Mapper\DBObjectMapper;
+use SmoothPHP\Framework\Database\Mapper\MappedDBObject;
 
 class ActiveSession extends MappedDBObject {
 
@@ -35,11 +35,11 @@ class ActiveSession extends MappedDBObject {
 		$this->validator = password_hash($validator, PASSWORD_DEFAULT);
 
 		setcookie(self::SESSION_KEY, sprintf('%s:%s', $this->selector, base64_encode($validator)),
-				0, // This cookie expires at the end of the session
-				'/', // This cookie applies to all sub-paths
-				cookie_domain(), // Apply it to this host and all its subdomains
-				false, // This cookie does not require HTTPS
-				false); // This cookie can be transferred over non-HTTP
+			0, // This cookie expires at the end of the session
+			'/', // This cookie applies to all sub-paths
+			cookie_domain(), // Apply it to this host and all its subdomains
+			false, // This cookie does not require HTTPS
+			false); // This cookie can be transferred over non-HTTP
 	}
 
 	public function getTableName() {
@@ -60,8 +60,8 @@ class ActiveSession extends MappedDBObject {
 			global $request;
 			/* @var $session ActiveSession */
 			$session = $map->fetch([
-					'ip'       => $request->server->REMOTE_ADDR,
-					'selector' => $cookie[0]
+				'ip'       => $request->server->REMOTE_ADDR,
+				'selector' => $cookie[0]
 			]);
 
 			if (!$session)

@@ -12,12 +12,14 @@
 
 namespace SmoothPHP\Framework\Flow\Routing;
 
+use ReflectionMethod;
 use SmoothPHP\Framework\Authentication\AuthenticationManager;
 use SmoothPHP\Framework\Cache\Assets\AssetsRegister;
 use SmoothPHP\Framework\Core\Abstracts\Controller;
 use SmoothPHP\Framework\Core\Kernel;
 use SmoothPHP\Framework\Database\Database;
 use SmoothPHP\Framework\Flow\Requests\Request;
+use SmoothPHP\Framework\Flow\Responses\Response;
 use SmoothPHP\Framework\Localization\LanguageRepository;
 
 class ControllerCall {
@@ -33,7 +35,7 @@ class ControllerCall {
 		$this->parameters = [];
 
 		$this->callable = [$controller, $call];
-		$method = new \ReflectionMethod(get_class($controller), $call);
+		$method = new ReflectionMethod(get_class($controller), $call);
 		$i = -1;
 
 		foreach ($method->getParameters() as $parameter) {
@@ -68,7 +70,7 @@ class ControllerCall {
 	}
 
 	/**
-	 * @return \SmoothPHP\Framework\Flow\Responses\Response|mixed
+	 * @return Response|mixed
 	 */
 	public function performCall(Kernel $kernel, Request $request, array $args) {
 		$this->setRef(Kernel::class, function () use ($kernel) {

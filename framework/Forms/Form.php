@@ -15,6 +15,7 @@ namespace SmoothPHP\Framework\Forms;
 use SmoothPHP\Framework\Flow\Requests\Request;
 use SmoothPHP\Framework\Forms\Containers\FormContainer;
 use SmoothPHP\Framework\Forms\Containers\FormHeader;
+use SmoothPHP\Framework\Forms\Containers\Type;
 
 class Form extends FormContainer {
 	private $action;
@@ -49,7 +50,7 @@ class Form extends FormContainer {
 	}
 
 	public function setAttribute($key, $attribute, $value, $group = null) {
-		/* @var $input \SmoothPHP\Framework\Forms\Containers\Type */
+		/* @var $input Type */
 		if ($group == null)
 			$input = $this->inputs->{$key}->input;
 		else
