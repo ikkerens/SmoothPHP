@@ -12,6 +12,7 @@
 
 namespace SmoothPHP\Framework\Authentication;
 
+use ReflectionClass;
 use RuntimeException;
 use SmoothPHP\Framework\Authentication\Sessions\ActiveSession;
 use SmoothPHP\Framework\Authentication\Sessions\LoginSession;
@@ -66,12 +67,16 @@ class AuthenticationManager {
 
 		$formBuilder->add('_logintoken', Types\HiddenType::class);
 		$formBuilder->add('email', Types\EmailType::class, [
-			'label' => $language->smooth_form_email_label
+			'label'       => $language->smooth_form_email_label,
+			'constraints' => [
+				new MaximumLengthConstraint(100)
+			]
 		]);
 		$formBuilder->add('password', Types\PasswordType::class, [
 			'label'       => $language->smooth_form_password,
 			'constraints' => [
-				new MaximumLengthConstraint(72) // For hashing we use BCRYPT, which is limited to 72 characters
+				// BCrypt truncates the password length to 72, so let's enforce that instead
+				new MaximumLengthConstraint(PASSWORD_DEFAULT == PASSWORD_BCRYPT ? 72 : 200)
 			]
 		]);
 		if ($kernel->getConfig()->authentication_rememberme) {
@@ -96,7 +101,7 @@ class AuthenticationManager {
 	}
 
 	public function setUserClass($clazz) {
-		$classDef = new \ReflectionClass($clazz);
+		$classDef = new ReflectionClass($clazz);
 
 		if (!$classDef->isSubclassOf(User::class))
 			throw new RuntimeException('Class ' . $clazz . ' does not derive from ' . User::class);

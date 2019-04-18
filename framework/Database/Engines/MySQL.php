@@ -41,7 +41,7 @@ class MySQL extends PDOEngine {
 			print('Dropping constraints...' . PHP_EOL);
 			$constraintsStmt = $this->connection->query("SELECT DISTINCT
 			    CONCAT('ALTER TABLE `',
-			            K.TABLE_NAME,ó
+			            K.TABLE_NAME,
 			            '` DROP FOREIGN KEY `',
 			            K.CONSTRAINT_NAME,
 			            '`;') AS query
