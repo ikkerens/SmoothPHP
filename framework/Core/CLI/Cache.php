@@ -32,6 +32,7 @@ class Cache extends Command {
 			else
 				unlink($file);
 		});
+		$kernel->getAssetsRegister()->getAssetDistributor()->clearCache();
 		print('Cache has been cleared.' . PHP_EOL);
 	}
 

@@ -28,6 +28,7 @@ use SmoothPHP\Framework\Core\CLI as CLI;
 
 $kernel = new Kernel();
 $website = new Website();
+$website->prepareClassloader($classLoader);
 $website->initialize($kernel);
 
 print('Finished initializing CLI module.' . PHP_EOL . '----' . PHP_EOL);

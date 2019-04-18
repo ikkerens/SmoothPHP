@@ -8,4 +8,6 @@ interface AssetDistributor {
 
 	public function getImageURL($cachedFile, $virtualPath);
 
+	public function clearCache();
+
 }

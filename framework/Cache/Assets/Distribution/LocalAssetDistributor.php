@@ -27,4 +27,7 @@ class LocalAssetDistributor implements AssetDistributor {
 		return $virtualPath;
 	}
 
+	public function clearCache() {
+		// No action required, the rest of the cache clear will handle this part for us.
+	}
 }

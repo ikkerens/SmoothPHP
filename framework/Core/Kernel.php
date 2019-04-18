@@ -42,6 +42,7 @@ class Kernel {
 	public function __construct() {
 		$this->config = new Config();
 		$this->authentication = new AuthenticationManager();
+		$this->assetsRegister = new AssetsRegister();
 		$this->errorHandler = [$this, 'handleError'];
 	}
 
@@ -63,7 +64,6 @@ class Kernel {
 			die('SmoothPHP is not yet installed. Run composer install in ' . realpath(__ROOT__ . 'framework/../'));
 
 		$this->routeDatabase = new RouteDatabase();
-		$this->assetsRegister = new AssetsRegister();
 		$this->languagerepo = new LanguageRepository($this);
 		$this->languagerepo->addSource(new FileDataSource(__ROOT__ . 'framework/meta/assets/strings/'));
 		$this->templateEngine = new TemplateEngine();
