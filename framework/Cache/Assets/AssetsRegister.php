@@ -12,6 +12,8 @@
 
 namespace SmoothPHP\Framework\Cache\Assets;
 
+use SmoothPHP\Framework\Cache\Assets\Distribution\AssetDistributor;
+use SmoothPHP\Framework\Cache\Assets\Distribution\LocalAssetDistributor;
 use SmoothPHP\Framework\Cache\Builder\FileCacheProvider;
 use SmoothPHP\Framework\Core\Kernel;
 use SmoothPHP\Framework\Flow\Requests\Robots;
@@ -19,6 +21,8 @@ use SmoothPHP\Framework\Flow\Requests\Robots;
 class AssetsRegister {
 	/* @var FileCacheProvider */
 	private $jsCache, $cssCache, $rawCache;
+	/* @var AssetDistributor */
+	private $cdn;
 	/* @var $imageCache ImageCache */
 	private $imageCache;
 	private $js, $css;
@@ -35,6 +39,7 @@ class AssetsRegister {
 			$this->cssCache = new FileCacheProvider('css', 'final.css', [AssetsRegister::class, 'minifyCSS']);
 		}
 		$this->rawCache = new FileCacheProvider('raw', null, 'file_get_contents');
+		$this->cdn = new LocalAssetDistributor();
 		$this->imageCache = new ImageCache('images');
 
 		$route = $kernel->getRouteDatabase();
@@ -102,6 +107,14 @@ class AssetsRegister {
 		}
 	}
 
+	public function getAssetDistributor() {
+		return $this->cdn;
+	}
+
+	public function setAssetDistributor(AssetDistributor $distributor) {
+		$this->cdn = $distributor;
+	}
+
 	public static function getSourcePath($type, $file) {
 		if (file_exists($file))
 			return $file;
@@ -156,19 +169,18 @@ class AssetsRegister {
 		];
 
 		global $kernel;
-		if (__ENV__ != 'dev' && isset($mimes[$fileInfo['extension']]) && filesize($cachePath) <= $kernel->getConfig()->image_inline_threshold) {
+		if (__ENV__ != 'dev' && isset($mimes[$fileInfo['extension']]) && filesize($cachePath) <= $kernel->getConfig()->image_inline_threshold)
 			return sprintf('data:%s;base64,%s', $mimes[$fileInfo['extension']], base64_encode(file_get_contents($cachePath)));
-		} else {
-			global $kernel;
+		else {
 			$virtualImageName = sprintf('%s%s.%dx%d.%s',
 				$fileInfo['dirname'] == '.' ? '' : ($fileInfo['dirname'] . '/'),
 				$fileInfo['filename'],
 				$width,
 				$height,
 				$fileInfo['extension']);
-			$virtualPath = $kernel->getRouteDatabase()->buildPath('assets_images', $virtualImageName);
 
-			return $virtualPath;
+			$virtualPath = $kernel->getRouteDatabase()->buildPath('assets_images', $virtualImageName);
+			return $this->cdn->getImageURL($cachePath, $virtualPath, $width, $height);
 		}
 	}
 
@@ -193,10 +205,12 @@ class AssetsRegister {
 	}
 
 	public static function minifyCSS($filePath) {
+		/** @noinspection PhpFullyQualifiedNameUsageInspection */
 		return (new \tubalmartin\CssMin\Minifier())->run(self::simpleLoad($filePath));
 	}
 
 	public static function minifyJS($filePath) {
+		/** @noinspection PhpFullyQualifiedNameUsageInspection */
 		return \JShrink\Minifier::minify(self::simpleLoad($filePath));
 	}
 

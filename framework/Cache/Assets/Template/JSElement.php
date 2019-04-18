@@ -13,7 +13,7 @@
 namespace SmoothPHP\Framework\Cache\Assets\Template;
 
 use JShrink\Minifier;
-use SmoothPHP\Framework\Core\Lock;
+use SmoothPHP\Framework\Cache\Assets\AssetsRegister;
 use SmoothPHP\Framework\Templates\Compiler\CompilerState;
 use SmoothPHP\Framework\Templates\Compiler\TemplateLexer;
 use SmoothPHP\Framework\Templates\Elements\Chain;
@@ -36,7 +36,7 @@ class JSElement extends Element {
 	}
 
 	public function output(CompilerState $tpl) {
-		/* @var $assetsRegister \SmoothPHP\Framework\Cache\Assets\AssetsRegister */
+		/* @var $assetsRegister AssetsRegister */
 		$assetsRegister = $tpl->vars->assets->getValue();
 
 		$files = [];
@@ -57,27 +57,16 @@ class JSElement extends Element {
 			return $carry . ',' . $file . filemtime($file);
 		}));
 
-		if (!file_exists(sprintf(self::COMPILED_PATH, $hash))) {
-			$lock = new Lock('compiled.js.' . $hash);
+		$url = $assetsRegister->getAssetDistributor()->getTextURL('js', $hash, function () use (&$files, &$assetsRegister) {
+			$contents = '';
+			array_walk($files, function ($file) use ($assetsRegister, &$contents) {
+				$contents .= '; ' . file_get_contents($file);
+			});
 
-			if ($lock->lock()) {
-				$contents = '';
-				array_walk($files, function ($file) use ($assetsRegister, &$contents) {
-					$contents .= '; ' . file_get_contents($file);
-				});
+			return Minifier::minify($contents);
+		});
 
-				$optimized = Minifier::minify($contents);
-
-				$path = sprintf(self::COMPILED_PATH, $hash);
-				file_put_contents($path, $optimized);
-				file_put_contents($path . '.gz', gzencode($optimized, 9));
-			}
-		}
-
-		global $kernel;
-		$path = $kernel->getRouteDatabase()->buildPath('assets_js_compiled', $hash);
-
-		header('Link: <' . $path . '>; rel=preload; as=script', false);
-		echo sprintf(self::FORMAT, $path);
+		header('Link: <' . $url . '>; rel=preload; as=script', false);
+		echo sprintf(self::FORMAT, $url);
 	}
 }

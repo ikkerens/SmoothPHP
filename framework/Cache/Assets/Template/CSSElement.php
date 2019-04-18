@@ -13,7 +13,6 @@
 namespace SmoothPHP\Framework\Cache\Assets\Template;
 
 use SmoothPHP\Framework\Cache\Assets\AssetsRegister;
-use SmoothPHP\Framework\Core\Lock;
 use SmoothPHP\Framework\Templates\Compiler\CompilerState;
 use SmoothPHP\Framework\Templates\Compiler\TemplateLexer;
 use SmoothPHP\Framework\Templates\Elements\Chain;
@@ -58,29 +57,18 @@ class CSSElement extends Element {
 			return $carry . ',' . $file . filemtime($file);
 		}));
 
-		if (!file_exists(sprintf(self::COMPILED_PATH, $hash))) {
-			$lock = new Lock('compiled.css.' . $hash);
+		$url = $assetsRegister->getAssetDistributor()->getTextURL('css', $hash, function () use (&$files, &$assetsRegister) {
+			$contents = '';
+			array_walk($files, function ($file) use ($assetsRegister, &$contents) {
+				$contents .= ' ' . file_get_contents($file);
+			});
 
-			if ($lock->lock()) {
-				$contents = '';
-				array_walk($files, function ($file) use ($assetsRegister, &$contents) {
-					$contents .= ' ' . file_get_contents($file);
-				});
+			$cssmin = new Minifier();
+			return $cssmin->run($contents);
+		});
 
-				$cssmin = new Minifier();
-				$optimized = $cssmin->run($contents);
-
-				$path = sprintf(self::COMPILED_PATH, $hash);
-				file_put_contents($path, $optimized);
-				file_put_contents($path . '.gz', gzencode($optimized, 9));
-			}
-		}
-
-		global $kernel;
-		$path = $kernel->getRouteDatabase()->buildPath('assets_css_compiled', $hash);
-
-		header('Link: <' . $path . '>; rel=preload; as=style', false);
-		echo sprintf(self::FORMAT, $path);
+		header('Link: <' . $url . '>; rel=preload; as=style', false);
+		echo sprintf(self::FORMAT, $url);
 	}
 
 }
