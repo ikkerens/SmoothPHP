@@ -180,6 +180,8 @@ class AssetsRegister {
 				$fileInfo['extension']);
 
 			$virtualPath = $kernel->getRouteDatabase()->buildPath('assets_images', $virtualImageName);
+			if (__ENV__ == 'dev')
+				return $virtualPath;
 			return $this->cdn->getImageURL($cachePath, $virtualPath, $width, $height);
 		}
 	}
