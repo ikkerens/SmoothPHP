@@ -13,6 +13,7 @@
 namespace SmoothPHP\Framework\Flow\Requests;
 
 define('FILTER_VALIDATE_ARRAY', 'array');
+define('FILTER_RAW', 'raw');
 
 /**
  * @property VariableSource int
@@ -21,6 +22,7 @@ define('FILTER_VALIDATE_ARRAY', 'array');
  * @property VariableSource email
  * @property VariableSource url
  * @property VariableSource array
+ * @property VariableSource raw
  */
 class VariableSource {
 	private $source;
@@ -71,6 +73,8 @@ class VariableSource {
 			case FILTER_VALIDATE_BOOLEAN:
 				$options['flags'] |= FILTER_NULL_ON_FAILURE;
 				break;
+			case FILTER_RAW:
+				return $this->source[$varName];
 			default:
 				$value = filter_var($value, FILTER_SANITIZE_STRING);
 		}
@@ -99,6 +103,8 @@ class VariableSource {
 			case "array":
 				$filter = FILTER_VALIDATE_ARRAY;
 				break;
+			case "raw":
+				$filter = FILTER_RAW;
 		}
 
 		if ($filter != FILTER_DEFAULT) {
