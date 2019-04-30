@@ -295,7 +295,7 @@ class AuthenticationManager {
 					return $request ? $this->determineNoAccessAction($request, false) : false;
 			} // Callable function
 			else if (is_callable($routeOpts['authentication'])) {
-				$response = call_user_func($routeOpts['authentication'], $routeOpts, $parameters);
+				$response = call_user_func($routeOpts['authentication'], $this, $routeOpts, $parameters);
 				if ($response instanceof Response)
 					return $request ? $response : false;
 				else if ($response === false)
