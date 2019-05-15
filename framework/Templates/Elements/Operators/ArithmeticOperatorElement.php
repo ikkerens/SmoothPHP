@@ -99,7 +99,10 @@ abstract class ArithmeticOperatorElement extends Element {
 
 		$right = new Chain();
 		$compiler->handleCommand($command, $lexer, $right, ')');
-		$chain->addElement(ArithmeticOperatorElement::determineOrder($chain->pop(), TemplateCompiler::flatten($right), $op));
+		$left = $chain->pop();
+		if (!($left instanceof Element))
+			throw new TemplateCompileException('Could not determine left-hand-side of operator in "'.$command->getRawContent().'"');
+		$chain->addElement(ArithmeticOperatorElement::determineOrder($left, TemplateCompiler::flatten($right), $op));
 	}
 
 	public static function determineOrder(Element $previous, Element $next, ArithmeticOperatorElement $op) {

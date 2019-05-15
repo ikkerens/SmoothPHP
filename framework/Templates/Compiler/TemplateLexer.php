@@ -106,4 +106,8 @@ class TemplateLexer {
 			substr($this->content, $this->pointer + strlen($incriminating), 10)
 		);
 	}
+
+	public function getRawContent() {
+		return $this->content;
+	}
 }
