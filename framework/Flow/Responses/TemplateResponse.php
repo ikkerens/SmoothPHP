@@ -26,6 +26,7 @@ class TemplateResponse extends Response {
 	}
 
 	public function build(Kernel $kernel, Request $request) {
+		$this->args['env'] = __ENV__;
 		$this->args['assets'] = $kernel->getAssetsRegister();
 		$this->args['route'] = $kernel->getRouteDatabase();
 		$this->args['language'] = $kernel->getLanguageRepository();
