@@ -18,6 +18,7 @@ use SmoothPHP\Framework\Database\Engines\MySQL;
 class Config {
 	public $default_language = 'en_us';
 	public $detect_language = true;
+	public $alwaysSecure = false; // Set this to true if you have a loadbalancer that handles HTTP
 
 	public $date_format = 'l, d-M-Y H:i:s';
 	public $image_inline_threshold = 10000;

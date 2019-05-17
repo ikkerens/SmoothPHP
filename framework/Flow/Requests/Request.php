@@ -58,7 +58,8 @@ class Request {
 	}
 
 	public function isSecure() {
-		return $this->serverr->has('HTTPS') && $this->serverr->HTTPS == 'on';
+		global $kernel;
+		return $kernel->getConfig()->alwaysSecure || ($this->serverr->has('HTTPS') && $this->serverr->HTTPS == 'on');
 	}
 
 }
