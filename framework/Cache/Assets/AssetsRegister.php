@@ -44,14 +44,17 @@ class AssetsRegister {
 
 		$route = $kernel->getRouteDatabase();
 		if ($route) {
-			$route->register([
-				'name'       => 'favicon',
-				'path'       => 'favicon.ico',
-				'controller' => AssetsController::class,
-				'call'       => 'favicon',
-				'robots'     => Robots::HIDE,
-				'internal'   => true
-			]);
+			if (file_exists(__ROOT__ . 'src/assets/images/favicon.ico')) {
+				$this->imageCache->ensureCache(self::getSourcePath('images', 'favicon.ico'), $nope, $nope);
+				$route->register([
+					'name'       => 'favicon',
+					'path'       => '/favicon.ico',
+					'controller' => AssetsController::class,
+					'call'       => 'favicon',
+					'robots'     => Robots::HIDE,
+					'internal'   => true
+				]);
+			}
 			$route->register([
 				'name'       => 'assets_images',
 				'path'       => '/images/...',
