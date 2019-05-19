@@ -115,7 +115,7 @@ class AuthenticationManager {
 		$session = $this->loginSessionMap->fetch([
 			'_separator' => 'OR', // Either match
 			'token'      => $request->post->_logintoken ?: (isset($_SESSION[self::SESSION_KEY_LOGINTOKEN]) ? $_SESSION[self::SESSION_KEY_LOGINTOKEN] : '-'),
-			'ip'         => $request->server->REMOTE_ADDR
+			'ip'         => $request->getIP()
 		]);
 		// If not, create a new login session
 		if (!$session)
@@ -142,7 +142,7 @@ class AuthenticationManager {
 			/* @var $session LoginSession */
 			$session = $this->loginSessionMap->fetch([
 				'token' => $request->post->_logintoken,
-				'ip'    => $request->server->REMOTE_ADDR
+				'ip'    => $request->getIP()
 			]);
 
 			if (!$session) {

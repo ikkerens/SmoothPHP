@@ -23,7 +23,7 @@ class LoginSession extends MappedDBObject {
 	private $failedAttempts;
 
 	public function __construct(Request $request) {
-		$this->ip = $request->server->REMOTE_ADDR;
+		$this->ip = $request->getIP();
 		$this->token = base64_encode(random_bytes(128));
 		$this->lastUpdate = time();
 		$this->failedAttempts = 0;

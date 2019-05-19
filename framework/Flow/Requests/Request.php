@@ -62,4 +62,13 @@ class Request {
 		return $kernel->getConfig()->alwaysSecure || ($this->serverr->has('HTTPS') && $this->serverr->HTTPS == 'on');
 	}
 
+	public function getIP() {
+		global $kernel;
+
+		if ($kernel->getConfig()->behindProxy && isset($this->serverr->HTTP_X_FORWARDED_FOR))
+			return $this->serverr->HTTP_X_FORWARDED_FOR;
+
+		return $this->serverr->REMOTE_ADDR;
+	}
+
 }

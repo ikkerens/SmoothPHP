@@ -28,7 +28,7 @@ class ActiveSession extends MappedDBObject {
 	public function __construct(User $user) {
 		global $request;
 		$this->userId = $user->getId();
-		$this->ip = $request->server->REMOTE_ADDR;
+		$this->ip = $request->getIP();
 
 		$this->selector = bin2hex(random_bytes(16));
 		$validator = random_bytes(72);
@@ -60,7 +60,7 @@ class ActiveSession extends MappedDBObject {
 			global $request;
 			/* @var $session ActiveSession */
 			$session = $map->fetch([
-				'ip'       => $request->server->REMOTE_ADDR,
+				'ip'       => $request->getIP(),
 				'selector' => $cookie[0]
 			]);
 

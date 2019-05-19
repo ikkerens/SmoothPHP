@@ -45,7 +45,7 @@ class RecaptchaType extends Type {
 				'content' => http_build_query([
 					'secret'   => $kernel->getConfig()->recaptcha_site_secret,
 					'response' => $request->post->get('g-recaptcha-response'),
-					'remoteip' => $request->server->REMOTE_ADDR
+					'remoteip' => $request->getIP()
 				])
 			]
 		]);
