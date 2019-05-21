@@ -1,0 +1,10 @@
+.idea/
+.gitignore
+composer.lock
+
+README.md
+License.md
+
+framework/meta/vendor/
+template/
+
