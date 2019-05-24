@@ -23,7 +23,10 @@ class NumericType extends Type {
 		$this->options = array_replace_recursive($this->options, [
 			'attr' => [
 				'type'        => 'number',
-				'placeholder' => '...'
+				'placeholder' => '...',
+				'step'        => null,
+				'min'         => null,
+				'max'         => null
 			]
 		]);
 	}
@@ -33,7 +36,25 @@ class NumericType extends Type {
 
 		if (!is_numeric($value)) {
 			global $kernel;
-			$form->addErrorMessage($kernel->getLanguageRepository()->getEntry('smooth_form_non_numeric', $label));
+			$form->addErrorMessage(sprintf($kernel->getLanguageRepository()->getEntry('smooth_form_non_numeric'), $label));
+			return;
+		}
+
+		if ($this->options['attr']['step'] !== null && ($value % $this->options['attr']['step']) !== 0) {
+			global $kernel;
+			$form->addErrorMessage(sprintf($kernel->getLanguageRepository()->getEntry('smooth_form_numeric_modulo'), $label, $this->options['attr']['step']));
+			return;
+		}
+
+		if ($this->options['attr']['min'] !== null && $value < $this->options['attr']['min']) {
+			global $kernel;
+			$form->addErrorMessage(sprintf($kernel->getLanguageRepository()->getEntry('smooth_form_numeric_min'), $label, $this->options['attr']['min']));
+			return;
+		}
+
+		if ($this->options['attr']['max'] !== null && $value > $this->options['attr']['max']) {
+			global $kernel;
+			$form->addErrorMessage(sprintf($kernel->getLanguageRepository()->getEntry('smooth_form_numeric_max'), $label, $this->options['attr']['max']));
 		}
 	}
 
