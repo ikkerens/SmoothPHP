@@ -33,10 +33,11 @@ class NumericType extends Type {
 
 	public function checkConstraint(Request $request, $name, $label, $value, Form $form) {
 		parent::checkConstraint($request, $name, $label, $value, $form);
+		$label = $label ?: last($this->options['label']);
 
 		if (!is_numeric($value)) {
 			global $kernel;
-			$form->addErrorMessage(sprintf($kernel->getLanguageRepository()->getEntry('smooth_form_non_numeric'), $label));
+			$form->addErrorMessage(sprintf($kernel->getLanguageRepository()->getEntry('smooth_form_numeric_invalid'), $label));
 			return;
 		}
 

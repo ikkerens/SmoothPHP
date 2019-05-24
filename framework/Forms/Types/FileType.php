@@ -38,6 +38,7 @@ class FileType extends Type {
 	public function checkConstraint(Request $request, $name, $label, $value, Form $form) {
 		global $kernel;
 		$language = $kernel->getLanguageRepository();
+		$label = $label ?: last($this->options['label']);
 
 		if ($request->files->{$name} === false || !$request->files->{$name}->isUploaded()) {
 			if ($this->required)

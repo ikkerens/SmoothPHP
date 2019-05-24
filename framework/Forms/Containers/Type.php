@@ -66,9 +66,10 @@ abstract class Type extends Constraint {
 	}
 
 	public function checkConstraint(Request $request, $name, $label, $value, Form $form) {
+		$label = $label ?: last($this->options['label']);
 		foreach ($this->constraints as $constraint)
 			/* @var $constraint Constraint */
-			$constraint->checkConstraint($request, $name, last($this->options['label']), $value, $form);
+			$constraint->checkConstraint($request, $name, $label, $value, $form);
 		$this->setAttribute('value', $value);
 	}
 

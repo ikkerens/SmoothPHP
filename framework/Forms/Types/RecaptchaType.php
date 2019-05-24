@@ -38,6 +38,7 @@ class RecaptchaType extends Type {
 
 	public function checkConstraint(Request $request, $name, $label, $value, Form $form) {
 		global $kernel;
+		$label = $label ?: last($this->options['label']);
 		$context = stream_context_create([
 			'http' => [
 				'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
@@ -52,7 +53,7 @@ class RecaptchaType extends Type {
 		$response = json_decode(file_get_contents('https://www.google.com/recaptcha/api/siteverify', false, $context));
 
 		if (!$response->success)
-			$form->addErrorMessage(sprintf($kernel->getLanguageRepository()->getEntry('smooth_form_captcha'), $this->options['label']));
+			$form->addErrorMessage(sprintf($kernel->getLanguageRepository()->getEntry('smooth_form_captcha'), $label));
 	}
 
 	public function __toString() {
