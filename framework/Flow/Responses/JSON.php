@@ -12,6 +12,7 @@
 
 namespace SmoothPHP\Framework\Flow\Responses;
 
+use RuntimeException;
 use SmoothPHP\Framework\Core\Kernel;
 use SmoothPHP\Framework\Flow\Requests\Request;
 
@@ -27,9 +28,9 @@ class JSON extends Response implements AlternateErrorResponse {
 	}
 
 	public function build(Kernel $kernel, Request $request) {
-		$this->built = json_encode($this->controllerResponse);
+		$this->built = json_encode($this->controllerResponse, JSON_THROW_ON_ERROR);
 		if ($this->built === false)
-			throw new \RuntimeException('Could not encode json: ' . json_last_error_msg());
+			throw new RuntimeException('Could not encode json: ' . json_last_error_msg());
 
 		if (strpos($request->server->HTTP_ACCEPT_ENCODING, 'gzip') !== false) {
 			$this->gzip = true;
