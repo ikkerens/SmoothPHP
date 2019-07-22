@@ -16,6 +16,9 @@ use RuntimeException;
 use SmoothPHP\Framework\Core\Kernel;
 use SmoothPHP\Framework\Flow\Requests\Request;
 
+if (!defined('JSON_THROW_ON_ERROR'))
+	define('JSON_THROW_ON_ERROR', 4194304);
+
 class JSON extends Response implements AlternateErrorResponse {
 	private $built;
 	private $gzip;

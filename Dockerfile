@@ -25,7 +25,7 @@ RUN ln -s /var/git/SmoothPHP/framework framework \
 COPY ./conf/nginx.conf /etc/nginx/nginx.conf
 
 # Configure supervisor
-COPY ./conf/supervisord.conf /etc/supervisor/conf.d/supervisord.conf 
+COPY ./conf/supervisord.conf /etc/supervisor/supervisord.conf 
 
 EXPOSE 80 443
-ENTRYPOINT ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+ENTRYPOINT ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisor/supervisord.conf"]
