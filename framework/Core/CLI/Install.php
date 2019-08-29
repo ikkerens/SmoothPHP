@@ -23,10 +23,8 @@ class Install extends Command {
 	}
 
 	public function handle(Kernel $kernel, array $argv) {
-		if (file_exists(__ROOT__ . '/production.lock')) {
-			printf('Can not run install script because production.lock exists.' . PHP_EOL);
-			return;
-		}
+		if (file_exists(__ROOT__ . '/production.lock'))
+			throw new \RuntimeException('Can not run uninstall script because production.lock exists.' . PHP_EOL);
 
 		$debug = true;
 		if (isset($argv[0]) && strtolower($argv[0]) == '--nodebug')
