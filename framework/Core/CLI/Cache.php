@@ -26,7 +26,7 @@ class Cache extends Command {
 			return;
 		}
 
-		$this->traverse(__ROOT__ . 'cache', function ($file, $isDir) {
+		traverse_path(__ROOT__ . 'cache', function ($file, $isDir) {
 			if ($isDir)
 				rmdir($file);
 			else

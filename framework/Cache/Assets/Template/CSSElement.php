@@ -54,7 +54,7 @@ class CSSElement extends Element {
 			return;
 
 		$hash = md5(array_reduce($files, function ($carry, $file) {
-			return $carry . ',' . $file . filemtime($file);
+			return $carry . ',' . $file . file_hash($file);
 		}));
 
 		$url = $assetsRegister->getAssetDistributor()->getTextURL('css', $hash, function () use (&$files, &$assetsRegister) {

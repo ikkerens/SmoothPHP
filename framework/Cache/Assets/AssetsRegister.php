@@ -19,6 +19,7 @@ use SmoothPHP\Framework\Core\Kernel;
 use SmoothPHP\Framework\Flow\Requests\Robots;
 
 class AssetsRegister {
+	private $fileHashCache;
 	/* @var FileCacheProvider */
 	private $jsCache, $cssCache, $rawCache;
 	/* @var AssetDistributor */
@@ -26,6 +27,21 @@ class AssetsRegister {
 	/* @var $imageCache ImageCache */
 	private $imageCache;
 	private $js, $css;
+
+	public function __construct() {
+		if (__ENV__ != 'prod')
+			return;
+
+		$this->fileHashCache = [];
+		$cache = function ($file, $dir) {
+			if ($dir) return;
+			$realpath = realpath($file);
+			$this->fileHashCache[$realpath] = md5_file($realpath);
+		};
+		traverse_path(__ROOT__ . 'framework/meta/assets/', $cache);
+		traverse_path(__ROOT__ . 'src/templates/', $cache);
+		traverse_path(__ROOT__ . 'src/assets/', $cache);
+	}
 
 	public function initialize(Kernel $kernel) {
 		$this->js = [];
@@ -108,6 +124,10 @@ class AssetsRegister {
 				]);
 			}
 		}
+	}
+
+	public function getCachedFileHash($realpath) {
+		return isset($this->fileHashCache[$realpath]) ? $this->fileHashCache[$realpath] : null;
 	}
 
 	public function getAssetDistributor() {

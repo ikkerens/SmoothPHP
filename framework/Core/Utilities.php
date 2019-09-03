@@ -25,18 +25,47 @@ function last($array) {
  * Method that wraps md5_file with a simple caching mechanism to prevent calculating the same file multiple times
  * @param $filename string Path to the file
  * @return string|null md5 checksum or null if the file doesn't exist
- * @note The results and file existence are cached, consecutive calls to this function will return even if the file no longer exists.
+ * @note Files in src/assets/ will be fast-tracked in prod, as they will have been pre-cached by Kernel initialization. This cache does not respect deletions.
  */
 function file_hash($filename) {
 	$filename = realpath($filename);
 
+	if (__ENV__ == 'prod') {
+		global $kernel;
+		$hash = $kernel->getAssetsRegister()->getCachedFileHash($filename);
+		if ($hash != null)
+			return $hash;
+	}
+
 	if (!file_exists($filename))
 		return null;
 
-	if (__ENV__ == 'prod')
-		return md5(filemtime($filename));
-	else
-		return md5_file($filename);
+	return md5_file($filename);
+}
+
+/**
+ * Recursively traverses a directory and calls action for each file and directory.
+ * @param $folder string Path to folder to traverse.
+ * @param $action callable Function that is called for each file and directory, first argument passed will be the relative path (including $folder), second argument will be a boolean which is true if the call is a directory.
+ * @param int $depth Maximum recursive depth to follow
+ * @warning While this function does support symlinks, it will not stop if there is symlink recursion.
+ */
+function traverse_path($folder, $action, $depth = -1) {
+	$contents = @scandir($folder);
+	if (!$contents)
+		return;
+
+	foreach ($contents as $file) {
+		if ($file != '.' && $file != '..') {
+			if (is_dir($folder . '/' . $file)) {
+				if ($depth != 0)
+					traverse_path($folder . '/' . $file, $action, $depth - 1);
+				call_user_func($action, $folder . '/' . $file, true);
+			} else {
+				call_user_func($action, $folder . '/' . $file, false);
+			}
+		}
+	}
 }
 
 function cookie_domain() {

@@ -30,7 +30,7 @@ class Install extends Command {
 		if (isset($argv[0]) && strtolower($argv[0]) == '--nodebug')
 			$debug = false;
 
-		$this->traverse(__ROOT__ . 'framework/meta/sql', function ($file) use ($kernel, $debug) {
+		traverse_path(__ROOT__ . 'framework/meta/sql', function ($file) use ($kernel, $debug) {
 			switch (pathinfo($file, PATHINFO_FILENAME)) {
 				case 'authentication':
 					if (!$kernel->getConfig()->authentication_enabled)
@@ -41,7 +41,7 @@ class Install extends Command {
 					$this->import($kernel->getDatabase(), $file, $debug);
 			}
 		});
-		$this->traverse(__ROOT__ . 'src/sql', function ($file) use ($kernel, $debug) {
+		traverse_path(__ROOT__ . 'src/sql', function ($file) use ($kernel, $debug) {
 			$this->import($kernel->getDatabase(), $file, $debug);
 		});
 	}
