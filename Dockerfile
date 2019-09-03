@@ -7,7 +7,7 @@ RUN apt-get update \
 	# Required for generic SmoothPHP applications
 	&& apt-get install -y php-fpm php-pdo-mysql php-pdo-pgsql php-gd php-dom php-intl php-apcu \
 	# Start the php service at least once
-	&& service php7.0-fpm start
+	&& service php7.3-fpm start
 
 WORKDIR /var/git/SmoothPHP
 COPY . .
