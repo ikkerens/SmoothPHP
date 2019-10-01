@@ -14,6 +14,7 @@ namespace SmoothPHP\Framework\Flow\Routing;
 
 use SmoothPHP\Framework\Core\Kernel;
 use SmoothPHP\Framework\Flow\Requests\Request;
+use SmoothPHP\Framework\Flow\Responses\NoContentResponse;
 use SmoothPHP\Framework\Flow\Responses\RedirectResponse;
 use SmoothPHP\Framework\Flow\Responses\Response;
 
@@ -66,7 +67,9 @@ class ResolvedRoute {
 			$response = $this->route['controllercall']->performCall($kernel, $request, $this->parameters);
 
 		// If the response isn't already wrapped, wrap it in the specified content-type
-		if (!($response instanceof Response))
+		if ($response == null)
+			$response = new NoContentResponse();
+		else if (!($response instanceof Response))
 			$response = new $this->route['content-type']($response);
 
 		// Prepare the response (rendering etc)
