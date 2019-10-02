@@ -67,7 +67,7 @@ class ResolvedRoute {
 			$response = $this->route['controllercall']->performCall($kernel, $request, $this->parameters);
 
 		// If the response isn't already wrapped, wrap it in the specified content-type
-		if ($response == null)
+		if ($response === null)
 			$response = new NoContentResponse();
 		else if (!($response instanceof Response))
 			$response = new $this->route['content-type']($response);
