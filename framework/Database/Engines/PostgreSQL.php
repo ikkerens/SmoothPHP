@@ -49,8 +49,8 @@ class PostgreSQL extends PDOEngine {
 		}
 	}
 
-	protected function createEngineStatement(PDOStatement $stmt, array &$params) {
-		return new PostgreSQLStatement($stmt, $params);
+	protected function createEngineStatement(PDOStatement $stmt) {
+		return new PostgreSQLStatement($stmt);
 	}
 
 }

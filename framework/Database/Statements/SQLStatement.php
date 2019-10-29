@@ -50,7 +50,7 @@ abstract class SQLStatement {
 	private function verifyStmtAwake() {
 		if (!isset($this->stmt)) {
 			$this->db->__wakeup();
-			$this->stmt = $this->db->getEngine()->prepare($this->query, $this->args, $this->params);
+			$this->stmt = $this->db->getEngine()->prepare($this->query, $this->args);
 		}
 	}
 

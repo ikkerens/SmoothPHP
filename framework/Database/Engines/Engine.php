@@ -24,7 +24,7 @@ interface Engine {
 
 	public function rollback();
 
-	public function prepare($query, array &$args = [], array &$params = []);
+	public function prepare($query, array &$args = []);
 
 	public function quote($field);
 

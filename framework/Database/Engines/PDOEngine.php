@@ -58,43 +58,58 @@ abstract class PDOEngine implements Engine {
 		}
 	}
 
-	public function prepare($query, array &$args = [], array &$params = []) {
+	public function prepare($query, array &$args = []) {
 		$previousMatch = null;
-		$query = preg_replace_callback('/\'[^\']*\'(*SKIP)(*FAIL)|%(d|f|s|r)/', function (array $matches) use (&$previousMatch, &$args, &$params) {
+		$params = [];
+		$types = [];
+
+		$query = preg_replace_callback('/\'[^\']*\'(*SKIP)(*FAIL)|%([dfsbr])/', function (array $matches) use (&$previousMatch, &$args, &$params, &$types) {
 			if ($matches[1] != 'r') {
 				$args[] = null;
 				$previousMatch = $matches[1];
 			} else if ($previousMatch == null)
 				throw new DatabaseException('Trying to use %r (repeat) in a query with no previous variables.');
 
+			$pdoKey = null;
+			switch ($previousMatch) {
+				case 'd':
+					$pdoKey = PDO::PARAM_INT;
+					break;
+				case 'b':
+					$pdoKey = PDO::PARAM_LOB;
+					break;
+				default:
+					$pdoKey = PDO::PARAM_STR;
+			}
+			$types[] = $pdoKey;
 			$params[] = &$args[count($args) - 1];
 			return '?';
 		}, $query);
 
 		try {
 			$stmt = $this->connection->prepare($query);
-			return $this->createEngineStatement($stmt, $params);
+			for ($i = 0; $i < count($types); $i++)
+				$stmt->bindParam($i + 1, $params[$i], $types[$i]);
+			return $this->createEngineStatement($stmt);
 		} catch (PDOException $e) {
 			throw new DatabaseException($e);
 		}
 	}
 
-	protected abstract function createEngineStatement(PDOStatement $stmt, array &$params);
+	protected abstract function createEngineStatement(PDOStatement $stmt);
 
 }
 
 abstract class PDOSQLStatement implements Statement {
 	protected $stmt;
-	private $params;
 
-	public function __construct(PDOStatement $stmt, array &$params) {
+	public function __construct(PDOStatement $stmt) {
 		$this->stmt = $stmt;
-		$this->params = &$params;
 	}
 
 	public function execute() {
 		try {
-			$this->stmt->execute($this->params);
+			$this->stmt->execute();
 		} catch (PDOException $e) {
 			throw new DatabaseException($e);
 		}

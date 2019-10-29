@@ -85,16 +85,16 @@ class MySQL extends PDOEngine {
 			$config->db_parameters);
 	}
 
-	protected function createEngineStatement(PDOStatement $stmt, array &$params) {
-		return new MySQLStatement($this->connection, $stmt, $params);
+	protected function createEngineStatement(PDOStatement $stmt) {
+		return new MySQLStatement($this->connection, $stmt);
 	}
 }
 
 class MySQLStatement extends PDOSQLStatement {
 	private $connection;
 
-	public function __construct(PDO $connection, PDOStatement $stmt, array $params) {
-		parent::__construct($stmt, $params);
+	public function __construct(PDO $connection, PDOStatement $stmt) {
+		parent::__construct($stmt);
 		$this->connection = $connection;
 	}
 
