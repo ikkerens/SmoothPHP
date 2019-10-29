@@ -18,62 +18,106 @@ use SmoothPHP\Framework\Flow\Requests\Request;
 class FileStream extends Response {
 
 	const CACHE_DATE = 'D, d M Y H:i:s \G\M\T';
+	const BINARY_SEPARATOR = 'Smooth_Binary_Separator';
 
 	/* @var Request */
 	protected $request;
 
+	private $range = null;
+	private $length;
+
 	public function build(Kernel $kernel, Request $request) {
-		$options = is_array($this->controllerResponse) ? $this->controllerResponse : ['url' => $this->controllerResponse];
 		$this->request = $request;
-		$urlParts = explode('/', $options['url']);
+		$options = is_array($this->controllerResponse) ? $this->controllerResponse : ['url' => $this->controllerResponse];
 		$this->controllerResponse = array_merge([
-			'type'     => 'application/octet-stream',
-			'filename' => end($urlParts),
-			'expires'  => 86400,
-			'cache'    => false,
-			'cors'     => true
+			'type'    => 'application/octet-stream',
+			'expires' => 86400,
+			'cache'   => false,
+			'cors'    => true,
+			'range'   => true,
 		], $options);
 
-		// Check if a local file exists
-		if (!file_exists($this->controllerResponse['url'])) {
-			// No? Let's check if the file starts with HTTP instead
-			if (strtolower(substr($this->controllerResponse['url'], 0, 4)) == 'http') {
-				// It does, get the headers to verify if it exists and get some useful headers
-				$headers = get_headers($this->controllerResponse['url']);
-				$response = (int)substr($headers[0], 9, 3);
+		if (isset($options['url'])) {
+			$urlParts = explode('/', $options['url']);
+			$this->controllerResponse['filename'] = end($urlParts);
 
-				// Success check
-				if ($response >= 200 && $response < 300) {
-					// Okay, the resource exists, get the content length for later usage
+			// Check if a local file exists
+			if (!file_exists($this->controllerResponse['url'])) {
+				// No? Let's check if the file starts with HTTP instead
+				if (strtolower(substr($this->controllerResponse['url'], 0, 4)) == 'http') {
+					// It does, get the headers to verify if it exists and get some useful headers
+					$headers = get_headers($this->controllerResponse['url']);
+					$response = (int)substr($headers[0], 9, 3);
 
-					foreach ($headers as $header) {
-						if (strpos(strtoupper($header), 'HTTP/') !== false)
-							continue;
+					// Success check
+					if ($response >= 200 && $response < 300) {
+						// Okay, the resource exists, get the content length for later usage
 
-						list($key, $value) = explode(': ', $header);
-						switch (strtolower($key)) {
-							case 'content-length':
-								$this->controllerResponse['size'] = (int)$value;
+						foreach ($headers as $header) {
+							if (strpos(strtoupper($header), 'HTTP/') !== false)
+								continue;
+
+							list($key, $value) = explode(': ', $header);
+							switch (strtolower($key)) {
+								case 'content-length':
+									$this->controllerResponse['size'] = (int)$value;
+							}
 						}
-					}
 
-					// Return without throwing
-					return;
+						// Return without throwing
+						return;
+					}
 				}
+				throw new \RuntimeException("File does not exist!");
 			}
-			throw new \RuntimeException("File does not exist!");
+		}
+
+		$this->length = isset($this->controllerResponse['size']) ? $this->controllerResponse['size'] : filesize($this->controllerResponse['url']);
+
+		if ($this->controllerResponse['range'] && $this->request->server->HTTP_RANGE) {
+			if (!preg_match('/^bytes=\d*-\d*(?:,\s*\d*-\d*)*$/', $this->request->server->HTTP_RANGE)) {
+				http_response_code(416);
+				header('Content-Range: bytes */' . $this->length);
+				exit();
+			}
+
+			$this->range = [];
+
+			$fullEnd = $this->length - 1;
+
+			$ranges = explode(',', substr($_SERVER['HTTP_RANGE'], 6));
+			foreach ($ranges as $range) {
+				$end = $fullEnd;
+
+				if ($range == '-')
+					$start = $this->length - substr($range, 1);
+				else {
+					$range = explode('-', $range);
+					$start = $range[0];
+					$end = (isset($range[1]) && is_numeric($range[1])) ? $range[1] : $this->length;
+				}
+				$end = ($end > $fullEnd) ? $fullEnd : $end;
+
+				if ($start > $end || $start > ($this->length - 1) || $end >= $this->length) {
+					http_response_code(416);
+					header('Content-Range: bytes ' . $start . '-' . $end . '/' . $this->length);
+					exit();
+				}
+
+				$this->range[] = [$start, $end];
+			}
 		}
 	}
 
 	protected function sendHeaders() {
 		parent::sendHeaders();
 
-		header('Content-Type: ' . $this->controllerResponse['type']);
 		header('Content-Disposition: ' . (
 			strpos($this->controllerResponse['type'], 'text/') === 0
 			|| strpos($this->controllerResponse['type'], 'image/') === 0
 				? 'inline' : 'attachment') . '; filename="' . $this->controllerResponse['filename'] . '"');
-		header('Content-Length: ' . (isset($this->controllerResponse['size']) ? $this->controllerResponse['size'] : filesize($this->controllerResponse['url'])));
+		header('Content-Type: ' . $this->controllerResponse['type']);
+		//header('Content-Length: ' . $this->length);
 		if ($this->controllerResponse['cors'])
 			header('Access-Control-Allow-Origin: *');
 
@@ -114,20 +158,78 @@ class FileStream extends Response {
 				}
 			}
 		}
+
+		if ($this->controllerResponse['range'])
+			header('Accept-Ranges: 0-' . $this->length);
+		else
+			header('Accept-Ranges: none');
+		if (is_array($this->range)) {
+			http_response_code(206);
+			if (count($this->range) > 1)
+				header('Content-Type: multipart/byteranges; boundary=' . self::BINARY_SEPARATOR);
+			else {
+				list($start, $end) = $this->range[0];
+				header('Content-Range: bytes ' . $start . '-' . $end . '/' . $this->length);
+			}
+		}
 	}
 
 	protected function sendBody() {
-		$fh = null;
+		set_time_limit(0);
+
+		if (isset($this->controllerResponse['data'])) {
+			$source = &$this->controllerResponse['data'];
+		} else
+			$source = fopen($this->controllerResponse['url'], 'rb');
+
 		try {
-			$fh = fopen($this->controllerResponse['url'], 'rb');
-			while (!feof($fh)) {
-				echo fread($fh, 1024 * 1024);
+			$start = 0;
+			$end = $this->length;
+			if (is_array($this->range)) {
+				if (count($this->range) > 1) {
+					foreach ($this->range as $segment) {
+						list($start, $end) = $segment;
+						printf("--%s\r\nContent-Type: %s\r\nContent-Range: bytes %d-%d/%d\r\n\r\n",
+							self::BINARY_SEPARATOR, $this->controllerResponse['type'],
+							$start, $end, $this->length);
+						$this->echoRange($source, $start, $end);
+						echo "\r\n";
+					}
+
+					printf('--%s--', self::BINARY_SEPARATOR);
+
+					return;
+				}
+
+				list($start, $end) = $this->range[0];
+			}
+
+			$this->echoRange($source, $start, $end);
+		} finally {
+			if (is_resource($source))
+				fclose($source);
+		}
+	}
+
+	private function echoRange(&$source, $start, $end) {
+		if (is_resource($source)) {
+			$remaining = $end - $start;
+
+			fseek($source, $start);
+			while (!feof($source) && $remaining > 0) {
+				$read = min(8 * 1024 * 1024, $remaining);
+				$remaining -= $read;
+
+				echo fread($source, $read);
 				ob_flush();
 				flush();
 			}
-		} finally {
-			if (is_resource($fh))
-				fclose($fh);
+		} else {
+			$data = substr($source, $start, $end - $start + 1);
+			echo $data;
+			ob_flush();
+			flush();
+			unset($data);
 		}
 	}
 
