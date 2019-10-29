@@ -118,7 +118,8 @@ class FileStream extends Response {
 			|| strpos($this->controllerResponse['type'], 'video/') === 0
 				? 'inline' : 'attachment') . '; filename="' . $this->controllerResponse['filename'] . '"');
 		header('Content-Type: ' . $this->controllerResponse['type']);
-		//header('Content-Length: ' . $this->length);
+		if (!is_array($this->range))
+			header('Content-Length: ' . $this->length);
 		if ($this->controllerResponse['cors'])
 			header('Access-Control-Allow-Origin: *');
 
