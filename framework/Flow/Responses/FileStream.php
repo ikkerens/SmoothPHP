@@ -115,6 +115,7 @@ class FileStream extends Response {
 		header('Content-Disposition: ' . (
 			strpos($this->controllerResponse['type'], 'text/') === 0
 			|| strpos($this->controllerResponse['type'], 'image/') === 0
+			|| strpos($this->controllerResponse['type'], 'video/') === 0
 				? 'inline' : 'attachment') . '; filename="' . $this->controllerResponse['filename'] . '"');
 		header('Content-Type: ' . $this->controllerResponse['type']);
 		//header('Content-Length: ' . $this->length);
