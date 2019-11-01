@@ -51,6 +51,8 @@ class RouteDatabase {
 
 		if (isset($routeOpts['controllercall']))
 			throw new \RuntimeException('You can not explicitly declare the controllercall route option.');
+		if (isset($this->routes[$routeOpts['name']]))
+			throw new \RuntimeException('A route with name ' . $routeOpts['name'] . ' is already registered.');
 
 		foreach (((array)$routeOpts['method']) as $method) {
 			$path = explode('/', $routeOptions['path']);
@@ -62,7 +64,7 @@ class RouteDatabase {
 				$pathPart = $path[$i];
 
 				if ($pathPart == self::VARARGS_INPUT && $i < (count($path) - 1))
-					throw new LogicException("Route varargs can only be used at the end of the path");
+					throw new LogicException('Route varargs can only be used at the end of the path');
 
 				if (!isset($currentRecursive[$pathPart]))
 					$currentRecursive[$pathPart] = [];
@@ -70,6 +72,8 @@ class RouteDatabase {
 				$currentRecursive = &$currentRecursive[$pathPart];
 			}
 
+			if (isset($currentRecursive[self::HANDLER]) && !(isset($routeOpts['force']) && $routeOpts['force']))
+				throw new LogicException(sprintf('Route with name "%s" is attempting to register a handler for url "%s", which is already defined. Give the route a \'force\' => true argument to override.', $routeOpts['name'], $routeOpts['path']));
 			$currentRecursive[self::HANDLER] = &$routeOpts;
 		}
 
@@ -225,7 +229,7 @@ class RouteDatabase {
 		}
 
 		if (strpos($path, self::WILDCARD_INPUT) !== false || strpos($path, self::VARARGS_INPUT) !== false)
-			throw new Exception('Not enough arguments given to path.');
+			throw new Exception('Not enough arguments given to path for route "' . $route['name'] . '".');
 
 		return $path;
 	}
