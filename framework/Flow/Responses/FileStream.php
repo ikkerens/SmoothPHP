@@ -215,7 +215,7 @@ class FileStream extends Response {
 
 	private function echoRange(&$source, $start, $end) {
 		if (is_resource($source)) {
-			$remaining = $end - $start;
+			$remaining = $end - $start + 1;
 
 			fseek($source, $start);
 			while (!feof($source) && $remaining > 0) {
