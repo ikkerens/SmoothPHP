@@ -27,7 +27,7 @@ class Install extends Command {
 			throw new \RuntimeException('Can not run uninstall script because production.lock exists.' . PHP_EOL);
 
 		$debug = true;
-		if (isset($argv[0]) && strtolower($argv[0]) == '--nodebug')
+		if (isset($argv[0]) && mb_strtolower($argv[0]) == '--nodebug')
 			$debug = false;
 
 		traverse_path(__ROOT__ . 'framework/meta/sql', function ($file) use ($kernel, $debug) {

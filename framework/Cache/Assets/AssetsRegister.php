@@ -150,7 +150,7 @@ class AssetsRegister {
 
 	public function addJS($file) {
 		$this->js[] = $file;
-		if (strtolower(substr($file, 0, 4)) != 'http') {
+		if (mb_strtolower(substr($file, 0, 4)) != 'http') {
 			$path = self::getSourcePath('js', $file);
 			$this->jsCache->fetch($path);
 		}
@@ -166,7 +166,7 @@ class AssetsRegister {
 
 	public function addCSS($file) {
 		$this->css[] = $file;
-		if (strtolower(substr($file, 0, 4)) != 'http') {
+		if (mb_strtolower(substr($file, 0, 4)) != 'http') {
 			$path = self::getSourcePath('css', $file);
 			$this->cssCache->fetch($path);
 		}

@@ -44,7 +44,7 @@ class FileStream extends Response {
 			// Check if a local file exists
 			if (!file_exists($this->controllerResponse['url'])) {
 				// No? Let's check if the file starts with HTTP instead
-				if (strtolower(substr($this->controllerResponse['url'], 0, 4)) == 'http') {
+				if (mb_strtolower(substr($this->controllerResponse['url'], 0, 4)) == 'http') {
 					// It does, get the headers to verify if it exists and get some useful headers
 					$headers = get_headers($this->controllerResponse['url']);
 					$response = (int)substr($headers[0], 9, 3);
@@ -58,7 +58,7 @@ class FileStream extends Response {
 								continue;
 
 							list($key, $value) = explode(': ', $header);
-							switch (strtolower($key)) {
+							switch (mb_strtolower($key)) {
 								case 'content-length':
 									$this->controllerResponse['size'] = (int)$value;
 							}

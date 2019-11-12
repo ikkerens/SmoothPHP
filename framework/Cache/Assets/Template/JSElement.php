@@ -42,7 +42,7 @@ class JSElement extends Element {
 		$files = [];
 
 		foreach (array_unique($assetsRegister->getJSFiles()) as $js) {
-			if (strtolower(substr($js, 0, 4)) == 'http') {
+			if (mb_strtolower(substr($js, 0, 4)) == 'http') {
 				echo sprintf(self::FORMAT, $js);
 				continue;
 			}

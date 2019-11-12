@@ -13,7 +13,8 @@
     "ext-ctype": "*",
     "ext-dom": "*",
     "ext-intl": "*",
-    "ext-pdo": "*"
+    "ext-pdo": "*",
+    "ext-mbstring": "*"
   },
   "suggest": {
     "ext-apcu": "Strongly recommended for production environments, allows the framework to memcache itself.",

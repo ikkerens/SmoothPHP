@@ -42,7 +42,7 @@ class CSSElement extends Element {
 		$files = [];
 
 		foreach (array_unique($assetsRegister->getCSSFiles()) as $css) {
-			if (strtolower(substr($css, 0, 4)) == 'http') {
+			if (mb_strtolower(substr($css, 0, 4)) == 'http') {
 				echo sprintf(self::FORMAT, $css);
 				continue;
 			}

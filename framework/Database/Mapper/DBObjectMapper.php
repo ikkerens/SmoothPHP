@@ -170,7 +170,7 @@ class DBObjectMapper {
 						return;
 
 					$comparator = '=';
-					if (strtolower(substr($key, 0, 5)) == 'like ') {
+					if (mb_strtolower(substr($key, 0, 5)) == 'like ') {
 						$comparator = 'LIKE';
 						$key = substr($key, 5);
 					}

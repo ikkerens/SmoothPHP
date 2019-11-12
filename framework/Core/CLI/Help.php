@@ -30,7 +30,7 @@ class Help extends Command {
 			$className = __NAMESPACE__ . '\\' . $fileName;
 			/* @var $cmd Command */
 			$cmd = new $className();
-			printf('smoothphp %s - %s%s', strtolower($fileName), $cmd->getDescription(), PHP_EOL);
+			printf('smoothphp %s - %s%s', mb_strtolower($fileName), $cmd->getDescription(), PHP_EOL);
 		}
 	}
 

@@ -28,7 +28,7 @@ class DebugJSElement extends Element {
 		$routes = $kernel->getRouteDatabase();
 
 		foreach (array_unique($assetsRegister->getJSFiles()) as $js) {
-			if (strtolower(substr($js, 0, 4)) != 'http')
+			if (mb_strtolower(substr($js, 0, 4)) != 'http')
 				$js = call_user_func_array([$routes, 'buildPath'], array_merge(['assets_js'], explode('/', $js)));
 			echo sprintf(JSElement::FORMAT, $js);
 		}

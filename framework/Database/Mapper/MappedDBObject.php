@@ -16,7 +16,7 @@ class MappedDBObject {
 	public $id = 0;
 
 	public function getTableName() {
-		return strtolower((new \ReflectionClass($this))->getShortName());
+		return mb_strtolower((new \ReflectionClass($this))->getShortName());
 	}
 
 	public function getId() {

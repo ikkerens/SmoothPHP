@@ -117,7 +117,7 @@ abstract class Type extends Constraint {
 
 	protected static function getLabel($field) {
 		$pieces = preg_split('/(?=[A-Z])/', $field);
-		array_map('strtolower', $pieces);
+		array_map('mb_strtolower', $pieces);
 		$pieces[0] = ucfirst($pieces[0]);
 
 		return implode(' ', $pieces);

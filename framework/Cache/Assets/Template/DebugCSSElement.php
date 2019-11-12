@@ -27,7 +27,7 @@ class DebugCSSElement extends Element {
 		/* @var $assetsRegister AssetsRegister */
 		$assetsRegister = $tpl->vars->assets->getValue();
 		foreach (array_unique($assetsRegister->getCSSFiles()) as $css) {
-			if (strtolower(substr($css, 0, 4)) != 'http')
+			if (mb_strtolower(substr($css, 0, 4)) != 'http')
 				$css = $kernel->getRouteDatabase()->buildPath('assets_css', $css);
 			echo sprintf(CSSElement::FORMAT, $css);
 		}
