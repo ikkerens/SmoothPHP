@@ -60,7 +60,11 @@ class TemplateCompiler {
 	}
 
 	public function compile($file) {
-		$lexer = new TemplateLexer(file_get_contents($file));
+		return $this->compileSource($file);
+	}
+
+	public function compileSource($source) {
+		$lexer = new TemplateLexer($source);
 
 		$chain = new Chain();
 		$this->read($lexer, $chain);

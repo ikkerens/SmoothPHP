@@ -44,6 +44,10 @@ class TemplateEngine {
 		return $this->prepareOutput($this->compiler->compile($absoluteFile), $args, false);
 	}
 
+	public function simpleCompile($templateSource, array $args = []) {
+		return $this->prepareOutput($this->compiler->compileSource($templateSource), $args, false);
+	}
+
 	private function prepareOutput(Element $template, array $args, $allowMinify = __ENV__ != 'dev') {
 		$state = new CompilerState();
 		$state->allowMinify = $allowMinify;
