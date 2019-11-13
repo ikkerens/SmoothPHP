@@ -60,7 +60,7 @@ class TemplateCompiler {
 	}
 
 	public function compile($file) {
-		return $this->compileSource($file);
+		return $this->compileSource(file_get_contents($file));
 	}
 
 	public function compileSource($source) {
