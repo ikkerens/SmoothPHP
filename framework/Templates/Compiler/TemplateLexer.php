@@ -56,7 +56,7 @@ class TemplateLexer {
 			return false;
 
 		$characters = substr($this->content, $this->pointer, $length);
-		if (mb_strtolower($characters) === strtolower($compare)) {
+		if (mb_strtolower($characters) === mb_strtolower($compare)) {
 			$this->pointer += $length;
 			return true;
 		} else

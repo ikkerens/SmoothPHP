@@ -63,18 +63,24 @@ class DereferenceOperatorElement extends Element {
 	public function output(CompilerState $tpl) {
 		$optimized = $this->optimize($tpl);
 
-		if (!($optimized->left instanceof PrimitiveElement))
-			throw new TemplateCompileException("Could not determine left-hand of '->' at runtime.");
-		else {
+		if (!($optimized->left instanceof PrimitiveElement)) {
+			$errMsg = 'Could not %s of undefined using dereference operator (\'->\' or \':\') at runtime.';
 			if ($optimized->right instanceof PrimitiveElement)
-				if (is_array($optimized->left->getValue()))
-					echo $optimized->left->getValue()[$optimized->right->getValue()];
-				else
-					echo $optimized->left->getValue()->{$optimized->right->getValue()};
+				throw new TemplateCompileException(sprintf($errMsg, 'get ' . $optimized->right->getValue()));
 			else if ($optimized->right instanceof FunctionOperatorElement)
-				echo call_user_func_array([$optimized->left->getValue(), $optimized->right->getFunctionName()], $optimized->right->getPrimitiveArgs($tpl));
+				throw new TemplateCompileException(sprintf($errMsg, 'call ' . $optimized->right->getFunctionName()));
 			else
-				throw new TemplateCompileException("Right-hand of '->' is invalid.");
+				throw new TemplateCompileException(sprintf($errMsg, 'get value'));
 		}
+
+		if ($optimized->right instanceof PrimitiveElement)
+			if (is_array($optimized->left->getValue()))
+				echo $optimized->left->getValue()[$optimized->right->getValue()];
+			else
+				echo $optimized->left->getValue()->{$optimized->right->getValue()};
+		else if ($optimized->right instanceof FunctionOperatorElement)
+			echo call_user_func_array([$optimized->left->getValue(), $optimized->right->getFunctionName()], $optimized->right->getPrimitiveArgs($tpl));
+		else
+			throw new TemplateCompileException("Right-hand of '->' is invalid.");
 	}
 }
