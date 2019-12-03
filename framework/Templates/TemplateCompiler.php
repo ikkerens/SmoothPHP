@@ -55,7 +55,8 @@ class TemplateCompiler {
 			'\'' => Elements\PrimitiveElement::class,
 			'"'  => Elements\PrimitiveElement::class,
 			'!'  => Elements\Operators\InEqualsOperatorElement::class,
-			'&'  => Elements\Operators\BinaryAndOperatorElement::class
+			'&'  => Elements\Operators\BinaryAndOperatorElement::class,
+			':' => Elements\Operators\DereferenceOperatorElement::class,
 		];
 	}
 

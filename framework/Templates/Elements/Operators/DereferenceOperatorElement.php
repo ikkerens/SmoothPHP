@@ -14,12 +14,20 @@ namespace SmoothPHP\Framework\Templates\Elements\Operators;
 
 use SmoothPHP\Framework\Templates\Compiler\CompilerState;
 use SmoothPHP\Framework\Templates\Compiler\TemplateCompileException;
+use SmoothPHP\Framework\Templates\Compiler\TemplateLexer;
+use SmoothPHP\Framework\Templates\Elements\Chain;
 use SmoothPHP\Framework\Templates\Elements\Commands\VariableElement;
 use SmoothPHP\Framework\Templates\Elements\Element;
 use SmoothPHP\Framework\Templates\Elements\PrimitiveElement;
+use SmoothPHP\Framework\Templates\TemplateCompiler;
 
 class DereferenceOperatorElement extends Element {
 	private $left, $right;
+
+	public static function handle(TemplateCompiler $compiler, TemplateLexer $command, TemplateLexer $lexer, Chain $chain) {
+		$command->next();
+		$chain->addElement(new DereferenceOperatorElement($chain->pop()));
+	}
 
 	public function __construct(Element $left, Element $right = null) {
 		$this->left = $left;
