@@ -22,7 +22,7 @@ use SmoothPHP\Framework\Templates\TemplateCompiler;
 
 class JSElement extends Element {
 	const FORMAT = '<script type="text/javascript" src="%s"></script>';
-	const COMPILED_PATH = __ROOT__ . 'cache/js/compiled.%s.js';
+	const LANG_FORMAT = '<script type="text/javascript">window.SmoothLanguage = %s;</script>';
 
 	public static function handle(TemplateCompiler $compiler, TemplateLexer $command, TemplateLexer $lexer, Chain $chain, $stackEnd) {
 		if (__ENV__ == 'dev')
@@ -65,6 +65,17 @@ class JSElement extends Element {
 
 			return Minifier::minify($contents);
 		});
+
+		// Check if we have to provide any language keys
+		$langKeys = $assetsRegister->getJSLanguageKeys();
+		if (count($langKeys) > 0) {
+			global $kernel;
+			$language = [];
+			$languageRepo = $kernel->getLanguageRepository();
+			foreach ($langKeys as $key)
+				$language[$key] = $languageRepo->getEntry($key);
+			echo sprintf(JSElement::LANG_FORMAT, json_encode($language, JSON_FORCE_OBJECT));
+		}
 
 		header('Link: <' . $url . '>; rel=preload; as=script', false);
 		echo sprintf(self::FORMAT, $url);

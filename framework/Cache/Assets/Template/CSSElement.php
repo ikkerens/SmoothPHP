@@ -22,7 +22,6 @@ use tubalmartin\CssMin\Minifier;
 
 class CSSElement extends Element {
 	const FORMAT = '<link rel="stylesheet" type="text/css" href="%s" />';
-	const COMPILED_PATH = __ROOT__ . 'cache/css/compiled.%s.css';
 
 	public static function handle(TemplateCompiler $compiler, TemplateLexer $command, TemplateLexer $lexer, Chain $chain, $stackEnd) {
 		if (__ENV__ == 'dev')

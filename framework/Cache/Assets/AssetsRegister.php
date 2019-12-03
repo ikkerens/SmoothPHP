@@ -17,6 +17,7 @@ use SmoothPHP\Framework\Cache\Assets\Distribution\LocalAssetDistributor;
 use SmoothPHP\Framework\Cache\Builder\FileCacheProvider;
 use SmoothPHP\Framework\Core\Kernel;
 use SmoothPHP\Framework\Flow\Requests\Robots;
+use SmoothPHP\Framework\Localization\JSLanguage;
 
 class AssetsRegister {
 	private $fileHashCache;
@@ -24,9 +25,9 @@ class AssetsRegister {
 	private $jsCache, $cssCache, $rawCache;
 	/* @var AssetDistributor */
 	private $cdn;
-	/* @var $imageCache ImageCache */
+	/* @var ImageCache */
 	private $imageCache;
-	private $js, $css;
+	private $js, $css, $lang;
 
 	public function __construct() {
 		if (__ENV__ != 'prod')
@@ -46,12 +47,19 @@ class AssetsRegister {
 	public function initialize(Kernel $kernel) {
 		$this->js = [];
 		$this->css = [];
+		$this->lang = [];
 
 		if (__ENV__ == 'dev') {
-			$this->jsCache = new FileCacheProvider('js', null, [AssetsRegister::class, 'simpleLoad']);
-			$this->cssCache = new FileCacheProvider('css', null, [AssetsRegister::class, 'simpleLoad']);
+			$this->jsCache = new FileCacheProvider('js', 'js',
+				[AssetsRegister::class, 'simpleJS'],
+				[AssetsRegister::class, 'loadJS'],
+				[AssetsRegister::class, 'saveJS']);
+			$this->cssCache = new FileCacheProvider('css', null, [AssetsRegister::class, 'simpleCSS']);
 		} else {
-			$this->jsCache = new FileCacheProvider('js', 'final.js', [AssetsRegister::class, 'minifyJS']);
+			$this->jsCache = new FileCacheProvider('js', 'final.js',
+				[AssetsRegister::class, 'minifyJS'],
+				[AssetsRegister::class, 'loadJS'],
+				[AssetsRegister::class, 'saveJS']);
 			$this->cssCache = new FileCacheProvider('css', 'final.css', [AssetsRegister::class, 'minifyCSS']);
 		}
 		$this->rawCache = new FileCacheProvider('raw', null, 'file_get_contents');
@@ -152,12 +160,17 @@ class AssetsRegister {
 		$this->js[] = $file;
 		if (mb_strtolower(substr($file, 0, 4)) != 'http') {
 			$path = self::getSourcePath('js', $file);
-			$this->jsCache->fetch($path);
+			list($lang, $_) = $this->jsCache->fetch($path);
+			$this->lang = array_merge($this->lang, $lang);
 		}
 	}
 
 	public function getJSFiles() {
 		return $this->js;
+	}
+
+	public function getJSLanguageKeys() {
+		return array_unique($this->lang);
 	}
 
 	public function getJSPath($file) {
@@ -205,7 +218,7 @@ class AssetsRegister {
 			$virtualPath = $kernel->getRouteDatabase()->buildPath('assets_images', $virtualImageName);
 			if (__ENV__ == 'dev')
 				return $virtualPath;
-			return $this->cdn->getImageURL($cachePath, $virtualPath, $width, $height);
+			return $this->cdn->getImageURL($cachePath, $virtualPath);
 		}
 	}
 
@@ -221,7 +234,7 @@ class AssetsRegister {
 		return $this->rawCache->getCachePath(self::getSourcePath('raw', $file));
 	}
 
-	public static function simpleLoad($filePath) {
+	public static function simpleCSS($filePath) {
 		global $kernel;
 		return $kernel->getTemplateEngine()->simpleFetch($filePath, [
 			'assets' => $kernel->getAssetsRegister(),
@@ -229,14 +242,38 @@ class AssetsRegister {
 		]);
 	}
 
+	public static function simpleJS($filePath) {
+		global $kernel;
+		$language = new JSLanguage();
+		$tpl = $kernel->getTemplateEngine()->simpleFetch($filePath, [
+			'assets'   => $kernel->getAssetsRegister(),
+			'route'    => $kernel->getRouteDatabase(),
+			'language' => $language,
+		]);
+		return [$language->getKeys(), $tpl];
+	}
+
+	public static function saveJS($fileName, $data) {
+		list($lang, $tpl) = $data;
+		file_put_contents($fileName . '.lang', serialize($lang));
+		file_put_contents($fileName, $tpl);
+	}
+
+	public static function loadJS($fileName) {
+		$lang = unserialize(file_get_contents($fileName . '.lang'));
+		$tpl = file_get_contents($fileName);
+		return [$lang, $tpl];
+	}
+
 	public static function minifyCSS($filePath) {
 		/** @noinspection PhpFullyQualifiedNameUsageInspection */
-		return (new \tubalmartin\CssMin\Minifier())->run(self::simpleLoad($filePath));
+		return (new \tubalmartin\CssMin\Minifier())->run(self::simpleCSS($filePath));
 	}
 
 	public static function minifyJS($filePath) {
+		list($lang, $tpl) = self::simpleJS($filePath);
 		/** @noinspection PhpFullyQualifiedNameUsageInspection */
-		return \JShrink\Minifier::minify(self::simpleLoad($filePath));
+		return [$lang, \JShrink\Minifier::minify($tpl)];
 	}
 
 }
