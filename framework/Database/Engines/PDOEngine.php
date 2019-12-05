@@ -30,7 +30,7 @@ abstract class PDOEngine implements Engine {
 				PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
 			]);
 		} catch (PDOException $e) {
-			throw new DatabaseException($e);
+			throw new DatabaseException('', 0, $e);
 		}
 	}
 
@@ -38,7 +38,7 @@ abstract class PDOEngine implements Engine {
 		try {
 			$this->connection->beginTransaction();
 		} catch (PDOException $e) {
-			throw new DatabaseException($e);
+			throw new DatabaseException('', 0, $e);
 		}
 	}
 
@@ -46,7 +46,7 @@ abstract class PDOEngine implements Engine {
 		try {
 			$this->connection->commit();
 		} catch (PDOException $e) {
-			throw new DatabaseException($e);
+			throw new DatabaseException('', 0, $e);
 		}
 	}
 
@@ -54,7 +54,7 @@ abstract class PDOEngine implements Engine {
 		try {
 			$this->connection->rollBack();
 		} catch (PDOException $e) {
-			throw new DatabaseException($e);
+			throw new DatabaseException('', 0, $e);
 		}
 	}
 
@@ -92,7 +92,7 @@ abstract class PDOEngine implements Engine {
 				$stmt->bindParam($i + 1, $params[$i], $types[$i]);
 			return $this->createEngineStatement($stmt);
 		} catch (PDOException $e) {
-			throw new DatabaseException($e);
+			throw new DatabaseException('', 0, $e);
 		}
 	}
 
@@ -111,7 +111,7 @@ abstract class PDOSQLStatement implements Statement {
 		try {
 			$this->stmt->execute();
 		} catch (PDOException $e) {
-			throw new DatabaseException($e);
+			throw new DatabaseException('', 0, $e);
 		}
 	}
 
@@ -121,7 +121,7 @@ abstract class PDOSQLStatement implements Statement {
 		try {
 			return $this->stmt->fetchAll(PDO::FETCH_ASSOC);
 		} catch (PDOException $e) {
-			throw new DatabaseException($e);
+			throw new DatabaseException('', 0, $e);
 		}
 	}
 }

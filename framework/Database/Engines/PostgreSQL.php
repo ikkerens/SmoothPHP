@@ -45,7 +45,7 @@ class PostgreSQL extends PDOEngine {
 		try {
 			$this->connection->exec('DROP OWNED BY current_user CASCADE');
 		} catch (PDOException $e) {
-			throw new DatabaseException($e);
+			throw new DatabaseException('', 0, $e);
 		}
 	}
 

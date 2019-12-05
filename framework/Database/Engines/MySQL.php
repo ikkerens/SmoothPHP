@@ -73,7 +73,7 @@ class MySQL extends PDOEngine {
 				$this->connection->exec($database['query']);
 			}
 		} catch (PDOException $e) {
-			throw new DatabaseException($e);
+			throw new DatabaseException('', 0, $e);
 		}
 	}
 
@@ -102,7 +102,7 @@ class MySQLStatement extends PDOSQLStatement {
 		try {
 			return $this->connection->lastInsertId();
 		} catch (PDOException $e) {
-			throw new DatabaseException($e);
+			throw new DatabaseException('', 0, $e);
 		}
 	}
 }
