@@ -39,7 +39,8 @@ class FileStream extends Response {
 
 		if (isset($options['url'])) {
 			$urlParts = explode('/', $options['url']);
-			$this->controllerResponse['filename'] = end($urlParts);
+			if (!isset($this->controllerResponse['filename']))
+				$this->controllerResponse['filename'] = end($urlParts);
 
 			// Check if a local file exists
 			if (!file_exists($this->controllerResponse['url'])) {
