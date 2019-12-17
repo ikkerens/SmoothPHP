@@ -12,6 +12,7 @@
 
 namespace SmoothPHP\Framework\Flow\Responses;
 
+use Exception;
 use SmoothPHP\Framework\Core\Kernel;
 use SmoothPHP\Framework\Flow\Requests\Request;
 
@@ -26,6 +27,12 @@ class FileStream extends Response {
 	private $range = null;
 	private $length;
 
+	public function __construct($controllerResponse) {
+		if (isset($controllerResponse['data']) && (!isset($controllerResponse['size']) || !isset($controllerResponse['filename'])))
+			throw new Exception('Passing data to filestream requires both the size and filename fields to be set as well.');
+		parent::__construct($controllerResponse);
+	}
+
 	public function build(Kernel $kernel, Request $request) {
 		$this->request = $request;
 		$options = is_array($this->controllerResponse) ? $this->controllerResponse : ['url' => $this->controllerResponse];
@@ -37,8 +44,8 @@ class FileStream extends Response {
 			'range'   => true,
 		], $options);
 
-		if (isset($options['url'])) {
-			$urlParts = explode('/', $options['url']);
+		if (isset($this->controllerResponse['url'])) {
+			$urlParts = explode('/', $this->controllerResponse['url']);
 			if (!isset($this->controllerResponse['filename']))
 				$this->controllerResponse['filename'] = end($urlParts);
 
