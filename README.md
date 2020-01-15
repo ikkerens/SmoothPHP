@@ -6,5 +6,5 @@ Instructions on how to use this framework can be found [here](https://github.com
 
 # The MIT License (MIT)
 
-Copyright © 2015-2018 Rens Rikkerink  
+Copyright © 2015-2020 Rens Rikkerink  
 Further information on this License can be found [here](https://github.com/Ikkerens/SmoothPHP/blob/master/License.md).

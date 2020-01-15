@@ -1,14 +1,13 @@
 <?php
 
-/*!
+/**
  * SmoothPHP
  * This file is part of the SmoothPHP project.
- * * * *
- * Copyright (C) 2017 Rens Rikkerink
+ * **********
+ * Copyright © 2015-2020
  * License: https://github.com/Ikkerens/SmoothPHP/blob/master/License.md
- * * * *
+ * **********
  * index.php
- * Primary entry point for SmoothPHP.
  */
 
 define('__ENV__', 'dev'); // Options: dev, debug, prod
