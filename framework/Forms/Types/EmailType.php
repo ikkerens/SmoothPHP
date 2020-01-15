@@ -32,6 +32,9 @@ class EmailType extends Type {
 	public function checkConstraint(Request $request, $name, $label, $value, Form $form) {
 		parent::checkConstraint($request, $name, $label, $value, $form);
 
+		if ($value === '') // Don't run this check if there is no data, let that be handled by the RequiredConstraint
+			return;
+
 		if (!$request->post->email->get($this->field)) {
 			global $kernel;
 			$form->addErrorMessage(sprintf($kernel->getLanguageRepository()->getEntry('smooth_form_email_invalid'), $value));

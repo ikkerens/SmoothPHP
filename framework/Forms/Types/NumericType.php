@@ -35,6 +35,9 @@ class NumericType extends Type {
 		parent::checkConstraint($request, $name, $label, $value, $form);
 		$label = $label ?: last($this->options['label']);
 
+		if ($value === '') // Don't run these checks if there is no data, let that be handled by the RequiredConstraint
+			return;
+
 		if (!is_numeric($value)) {
 			global $kernel;
 			$form->addErrorMessage(sprintf($kernel->getLanguageRepository()->getEntry('smooth_form_numeric_invalid'), $label));
