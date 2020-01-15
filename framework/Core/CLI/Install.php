@@ -101,3 +101,4 @@ class Install extends Command {
 
 		printf('%d queries executed.' . PHP_EOL, $count);
 	}
+}
