@@ -55,6 +55,10 @@ class DatabaseResult {
 			return false;
 	}
 
+	public function __isset($name) {
+		return isset($this->results[$this->current]) && isset($this->results[$this->current][$name]);
+	}
+
 	public function __iterate() {
 		return $this->results;
 	}
