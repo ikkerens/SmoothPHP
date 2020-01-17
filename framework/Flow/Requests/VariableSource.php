@@ -116,4 +116,8 @@ class VariableSource {
 		return $this->get($varName, $filter);
 	}
 
+	public function __isset($name) {
+		return isset($this->source[$name]);
+	}
+
 }

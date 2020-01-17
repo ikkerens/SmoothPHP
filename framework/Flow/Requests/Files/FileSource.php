@@ -32,4 +32,8 @@ class FileSource {
 
 		return $this->source[$name];
 	}
+
+	public function __isset($name) {
+		return isset($this->source[$name]);
+	}
 }
