@@ -21,6 +21,7 @@ use SmoothPHP\Framework\Database\Database;
 use SmoothPHP\Framework\Flow\Requests\Request;
 use SmoothPHP\Framework\Flow\Responses\Response;
 use SmoothPHP\Framework\Localization\LanguageRepository;
+use SmoothPHP\Framework\Templates\TemplateEngine;
 
 class ControllerCall {
 	private $instanceRefs;
@@ -48,6 +49,7 @@ class ControllerCall {
 				case LanguageRepository::class:
 				case Database::class:
 				case AuthenticationManager::class:
+				case TemplateEngine::class:
 					$this->controllerArgs[] = &$this->getRef($className);
 					break;
 				default: // Mixed-type arg, url-argument
@@ -93,6 +95,9 @@ class ControllerCall {
 		});
 		$this->setRef(AuthenticationManager::class, function () use ($kernel) {
 			return $kernel->getAuthenticationManager();
+		});
+		$this->setRef(TemplateEngine::class, function () use ($kernel) {
+			return $kernel->getTemplateEngine();
 		});
 
 		$i = 0;
