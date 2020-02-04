@@ -19,7 +19,7 @@ use SmoothPHP\Framework\Templates\Elements\PrimitiveElement;
 class EqualsOperatorElement extends ArithmeticOperatorElement {
 
 	public function getPriority() {
-		return 6;
+		return 7;
 	}
 
 	public function optimize(CompilerState $tpl) {

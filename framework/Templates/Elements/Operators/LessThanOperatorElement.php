@@ -6,18 +6,25 @@
  * Copyright © 2015-2020
  * License: https://github.com/Ikkerens/SmoothPHP/blob/master/License.md
  * **********
- * AndOperatorElement.php
+ * LessThanOperatorElement.php
  */
 
 namespace SmoothPHP\Framework\Templates\Elements\Operators;
 
 use SmoothPHP\Framework\Templates\Compiler\CompilerState;
+use SmoothPHP\Framework\Templates\Elements\Element;
 use SmoothPHP\Framework\Templates\Elements\PrimitiveElement;
 
-class AndOperatorElement extends ArithmeticOperatorElement {
+class LessThanOperatorElement extends ArithmeticOperatorElement {
+	private $equals;
+
+	protected function __construct($equals, Element $left = null, Element $right = null) {
+		parent::__construct($left, $right);
+		$this->equals = $equals;
+	}
 
 	public function getPriority() {
-		return 11;
+		return 6;
 	}
 
 	public function optimize(CompilerState $tpl) {
@@ -29,9 +36,12 @@ class AndOperatorElement extends ArithmeticOperatorElement {
 		$right = $this->right->optimize($tpl);
 
 		if ($left instanceof PrimitiveElement && $right instanceof PrimitiveElement)
-			return new PrimitiveElement($left->getValue() && $right->getValue());
+			if ($this->equals)
+				return new PrimitiveElement($left->getValue() <= $right->getValue());
+			else
+				return new PrimitiveElement($left->getValue() < $right->getValue());
 		else
-			return new self($left, $right);
+			return new self($this->equals, $left, $right);
 	}
 
 }

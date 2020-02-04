@@ -17,7 +17,7 @@ use SmoothPHP\Framework\Templates\Elements\PrimitiveElement;
 class OrOperatorElement extends ArithmeticOperatorElement {
 
 	public function getPriority() {
-		return 5;
+		return 12;
 	}
 
 	public function optimize(CompilerState $tpl) {

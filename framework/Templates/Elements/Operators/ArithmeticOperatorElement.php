@@ -33,6 +33,7 @@ abstract class ArithmeticOperatorElement extends Element {
 		$this->right = $right;
 	}
 
+	// Priorities will be taken from: https://en.wikipedia.org/wiki/Order_of_operations#Programming_languages
 	protected abstract function getPriority();
 
 	public static function handle(TemplateCompiler $compiler, TemplateLexer $command, TemplateLexer $lexer, Chain $chain) {
@@ -94,6 +95,12 @@ abstract class ArithmeticOperatorElement extends Element {
 					$chain->addElement(new InverseOperatorElement(TemplateCompiler::flatten($right)));
 					return;
 				}
+			case '<':
+				$op = new LessThanOperatorElement($command->peek('='));
+				break;
+			case '>':
+				$op = new GreaterThanOperatorElement($command->peek('='));
+				break;
 		}
 		$command->skipWhitespace();
 
@@ -101,7 +108,7 @@ abstract class ArithmeticOperatorElement extends Element {
 		$compiler->handleCommand($command, $lexer, $right, ')');
 		$left = $chain->pop();
 		if (!($left instanceof Element))
-			throw new TemplateCompileException('Could not determine left-hand-side of operator in "'.$command->getRawContent().'"');
+			throw new TemplateCompileException('Could not determine left-hand-side of operator in "' . $command->getRawContent() . '"');
 		$chain->addElement(ArithmeticOperatorElement::determineOrder($left, TemplateCompiler::flatten($right), $op));
 	}
 

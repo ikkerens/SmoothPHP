@@ -18,7 +18,7 @@ use SmoothPHP\Framework\Templates\Elements\PrimitiveElement;
 class AdditionOperatorElement extends ArithmeticOperatorElement {
 
 	public function getPriority() {
-		return 2;
+		return 4;
 	}
 
 	public function optimize(CompilerState $tpl) {

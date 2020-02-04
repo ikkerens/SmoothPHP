@@ -17,7 +17,7 @@ use SmoothPHP\Framework\Templates\Elements\PrimitiveElement;
 class BinaryAndOperatorElement extends ArithmeticOperatorElement {
 
 	public function getPriority() {
-		return 3;
+		return 8;
 	}
 
 	public function optimize(CompilerState $tpl) {
