@@ -113,7 +113,7 @@ abstract class ArithmeticOperatorElement extends Element {
 	}
 
 	public static function determineOrder(Element $previous, Element $next, ArithmeticOperatorElement $op) {
-		if ($previous instanceof ArithmeticOperatorElement && $previous->getPriority() <= $op->getPriority()) {
+		if ($previous instanceof ArithmeticOperatorElement && $previous->getPriority() < $op->getPriority()) {
 			$left = $previous->left;
 			$previous->left = $op;
 			$op->left = $left;

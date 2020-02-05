@@ -94,7 +94,9 @@ class TemplateCompiler {
 				$finishString();
 				return;
 			} else if ($lexer->peek(self::DELIMITER_START)) {
-				if ($lexer->isWhitespace()) {
+				if ($lexer->peek(' $', false))
+					$lexer->skipWhitespace();
+				else if ($lexer->isWhitespace()) {
 					$rawString .= self::DELIMITER_START;
 					continue;
 				}

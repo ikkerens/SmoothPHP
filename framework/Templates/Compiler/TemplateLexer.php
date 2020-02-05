@@ -50,14 +50,15 @@ class TemplateLexer {
 		return $this->content[$this->pointer];
 	}
 
-	public function peek($compare) {
+	public function peek($compare, $absorb = true) {
 		$length = strlen($compare);
 		if (($this->pointer + $length) > strlen($this->content))
 			return false;
 
 		$characters = substr($this->content, $this->pointer, $length);
 		if (mb_strtolower($characters) === mb_strtolower($compare)) {
-			$this->pointer += $length;
+			if ($absorb)
+				$this->pointer += $length;
 			return true;
 		} else
 			return false;
