@@ -20,6 +20,7 @@ use SmoothPHP\Framework\Database\Engines\PostgreSQL;
 use SmoothPHP\Framework\Database\Statements\SQLStatementWithResult;
 
 define('DB_NO_LIMIT', -1);
+define('DB_FETCH_ALL', '1=1');
 
 class DBObjectMapper {
 	private $db;
