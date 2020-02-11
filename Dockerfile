@@ -6,7 +6,7 @@
 # **********
 # Dockerfile
 
-FROM nginx:latest
+FROM nginx:1.17.8
 
 # Set up environment
 RUN apt-get update \
@@ -26,6 +26,8 @@ RUN composer install --no-dev
 # Prepare working directory
 WORKDIR /var/www/project
 RUN ln -s /var/git/SmoothPHP/framework framework \
+    && chmod +x /var/git/SmoothPHP/smoothphp \
+    && ln -s /var/git/SmoothPHP/smoothphp \
 	&& mkdir public \
 	&& cp /var/git/SmoothPHP/public/index.php ./public/ \
 	&& sed -i 's/dev/prod/' ./public/index.php \
