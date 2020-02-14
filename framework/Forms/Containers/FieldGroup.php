@@ -15,6 +15,7 @@ namespace SmoothPHP\Framework\Forms\Containers;
 use SmoothPHP\Framework\Flow\Requests\Request;
 use SmoothPHP\Framework\Forms\Constraint;
 use SmoothPHP\Framework\Forms\Form;
+use SmoothPHP\Framework\Forms\Styles\FormStyle;
 use SmoothPHP\Framework\Forms\Types\StringType;
 
 class FieldGroup extends Type {
@@ -35,16 +36,11 @@ class FieldGroup extends Type {
 
 		$this->children = [];
 
-		$first = true;
 		foreach ($options['children'] as $value) {
 			/* @var $element Type */
 			$element = new $value['type']($value['field']);
 			$element->initialize(array_merge_recursive($childOptions, $value));
-			$this->children[$value['field']] = new FormContainer([
-				'groupseparator' => $first ? '' : sprintf('</td></tr><tr class="fieldgroup_%s"><td></td><td>', $this->field),
-				'input'          => $element
-			]);
-			$first = false;
+			$this->children[$value['field']] = $element;
 		}
 	}
 
@@ -52,14 +48,8 @@ class FieldGroup extends Type {
 		return $this->children[$key];
 	}
 
-	public function getContainer() {
-		return [
-			'rowstart'     => sprintf('<tr class="fieldgroup_%s"><td>', $this->field),
-			'label'        => $this->generateLabel(),
-			'rowseparator' => '</td><td>',
-			'children'     => new FormContainer($this->children),
-			'rowend'       => '</td></tr>'
-		];
+	public function getContainer(FormStyle $style) {
+		return $style->buildFieldGroup($this->generateLabel(), $this, $this->children);
 	}
 
 	public function checkConstraint(Request $request, $name, $label, $value, Form $form) {

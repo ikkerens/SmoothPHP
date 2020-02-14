@@ -13,6 +13,7 @@
 namespace SmoothPHP\Framework\Forms\Types;
 
 use SmoothPHP\Framework\Forms\Containers\Type;
+use SmoothPHP\Framework\Forms\Styles\FormStyle;
 
 class HiddenType extends Type {
 
@@ -25,7 +26,7 @@ class HiddenType extends Type {
 		]);
 	}
 
-	public function getContainer() {
+	public function getContainer(FormStyle $_) {
 		return [
 			'rowstart'     => '',
 			'label'        => '',

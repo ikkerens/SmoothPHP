@@ -16,6 +16,7 @@ use SmoothPHP\Framework\Flow\Requests\Request;
 use SmoothPHP\Framework\Forms\Containers\FormContainer;
 use SmoothPHP\Framework\Forms\Containers\FormHeader;
 use SmoothPHP\Framework\Forms\Containers\Type;
+use SmoothPHP\Framework\Forms\Styles\FormStyle;
 
 class Form extends FormContainer {
 	private $action;
@@ -23,14 +24,8 @@ class Form extends FormContainer {
 	private $hasResult;
 	private $failReasons;
 
-	public function __construct($action, array $headerArgs, array $elements) {
-		parent::__construct([
-			'header'     => new FormHeader($this, $headerArgs),
-			'tablestart' => '<table>',
-			'inputs'     => new FormContainer($elements),
-			'tableend'   => '</table>',
-			'footer'     => '</form>'
-		]);
+	public function __construct(FormStyle $style, $action, array $headerArgs, array $elements) {
+		parent::__construct($style->buildForm(new FormHeader($this, $headerArgs), new FormContainer($elements)));
 		$this->hasResult = false;
 		$this->action = $action;
 	}

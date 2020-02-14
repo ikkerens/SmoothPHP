@@ -16,6 +16,7 @@ use SmoothPHP\Framework\Flow\Requests\Request;
 use SmoothPHP\Framework\Forms\Constraint;
 use SmoothPHP\Framework\Forms\Constraints\RequiredConstraint;
 use SmoothPHP\Framework\Forms\Form;
+use SmoothPHP\Framework\Forms\Styles\FormStyle;
 
 abstract class Type extends Constraint {
 	protected $field;
@@ -55,14 +56,8 @@ abstract class Type extends Constraint {
 		}
 	}
 
-	public function getContainer() {
-		return [
-			'rowstart'     => '<tr><td>',
-			'label'        => $this->generateLabel(),
-			'rowseparator' => '</td><td>',
-			'input'        => $this,
-			'rowend'       => '</td></tr>'
-		];
+	public function getContainer(FormStyle $style) {
+		return $style->buildTypeElement($this->generateLabel(), $this);
 	}
 
 	public function checkConstraint(Request $request, $name, $label, $value, Form $form) {
