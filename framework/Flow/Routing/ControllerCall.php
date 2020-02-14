@@ -53,7 +53,7 @@ class ControllerCall {
 					$this->controllerArgs[] = &$this->getRef($className);
 					break;
 				default: // Mixed-type arg, url-argument
-					$this->parameters[++$i] = null;
+					$this->parameters[++$i] = $parameter->isDefaultValueAvailable() ? $parameter->getDefaultValue() : null;
 					$this->controllerArgs[] = &$this->parameters[$i];
 					break;
 			}
@@ -75,28 +75,28 @@ class ControllerCall {
 	 * @return Response|mixed
 	 */
 	public function performCall(Kernel $kernel, Request $request, array $args) {
-		$this->setRef(Kernel::class, function () use ($kernel) {
+		$this->setRef(Kernel::class, function &() use (&$kernel) {
 			return $kernel;
 		});
-		$this->setRef(Request::class, function () use ($request) {
+		$this->setRef(Request::class, function &() use (&$request) {
 			return $request;
 		});
-		$this->setRef(RouteDatabase::class, function () use ($kernel) {
+		$this->setRef(RouteDatabase::class, function () use (&$kernel) {
 			return $kernel->getRouteDatabase();
 		});
-		$this->setRef(AssetsRegister::class, function () use ($kernel) {
+		$this->setRef(AssetsRegister::class, function () use (&$kernel) {
 			return $kernel->getAssetsRegister();
 		});
-		$this->setRef(LanguageRepository::class, function () use ($kernel) {
+		$this->setRef(LanguageRepository::class, function () use (&$kernel) {
 			return $kernel->getLanguageRepository();
 		});
-		$this->setRef(Database::class, function () use ($kernel) {
+		$this->setRef(Database::class, function () use (&$kernel) {
 			return $kernel->getDatabase();
 		});
-		$this->setRef(AuthenticationManager::class, function () use ($kernel) {
+		$this->setRef(AuthenticationManager::class, function () use (&$kernel) {
 			return $kernel->getAuthenticationManager();
 		});
-		$this->setRef(TemplateEngine::class, function () use ($kernel) {
+		$this->setRef(TemplateEngine::class, function () use (&$kernel) {
 			return $kernel->getTemplateEngine();
 		});
 
