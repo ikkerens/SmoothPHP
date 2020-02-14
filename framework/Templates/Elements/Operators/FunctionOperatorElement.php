@@ -110,7 +110,7 @@ class FunctionOperatorElement extends Element {
 			/* Variable functions */
 			'boolval', 'doubleval', 'empty', 'floatval', 'gettype', 'intval', 'is_array', 'is_bool', 'is_callable', 'is_double', 'is_float', 'is_int', 'is_integer', 'is_long', 'is_null', 'is_numeric', 'is_object', 'is_real', 'is_resource', 'is_scalar', 'is_string', 'print_r', 'strval', 'var_dump',
 			/* Uncategorized functions */
-			'urlencode'
+			'urlencode', 'range'
 		];
 	}
 
