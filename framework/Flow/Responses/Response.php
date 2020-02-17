@@ -25,12 +25,15 @@ abstract class Response {
 	public abstract function build(Kernel $kernel, Request $request);
 
 	protected function sendHeaders() {
-		header('X-Powered-By: SmoothPHP');
+		global $kernel;
+		foreach ($kernel->getConfig()->project_headers as $header)
+			header($header);
 	}
 
 	protected abstract function sendBody();
 
 	public function send() {
+		header('X-Powered-By: SmoothPHP');
 		$this->sendHeaders();
 		$this->sendBody();
 	}

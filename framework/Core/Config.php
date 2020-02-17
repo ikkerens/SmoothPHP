@@ -21,7 +21,6 @@ class Config {
 	public $alwaysSecure = false; // Set this to true if you have a loadbalancer that handles HTTP
 	public $behindProxy = false; // Set this to true if the cookies should use X-Forwarded-For instead.
 
-	public $date_format = 'l, d-M-Y H:i:s';
 	public $image_inline_threshold = 10000;
 
 	public $db_enabled = false;
@@ -41,6 +40,7 @@ class Config {
 
 	public $cron_handler = CronTab::class;
 	public $enable_robots = true;
+	public $project_headers = [];
 
 	public $recaptcha_site_key = '';
 	public $recaptcha_site_secret = '';
