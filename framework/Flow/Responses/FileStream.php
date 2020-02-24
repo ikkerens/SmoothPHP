@@ -231,13 +231,11 @@ class FileStream extends Response {
 				$remaining -= $read;
 
 				echo fread($source, $read);
-				ob_flush();
 				flush();
 			}
 		} else {
 			$data = substr($source, $start, $end - $start + 1);
 			echo $data;
-			ob_flush();
 			flush();
 			unset($data);
 		}
