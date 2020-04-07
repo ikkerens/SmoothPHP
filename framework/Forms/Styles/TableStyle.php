@@ -39,11 +39,11 @@ class TableStyle implements FormStyle {
 		];
 	}
 
-	public function buildFieldGroup($label, FieldGroup $parent, array $children) {
+	public function buildFieldGroup($label, FieldGroup $parent, array $childDefinitions) {
 		$children = [];
 
 		$first = true;
-		foreach ($children as $child) {
+		foreach ($childDefinitions as $child) {
 			$children[] = new FormContainer([
 				'groupseparator' => $first ? '' : sprintf('</td></tr><tr class="fieldgroup_%s"><td></td><td>', $parent->getFieldName()),
 				'input'          => $child
