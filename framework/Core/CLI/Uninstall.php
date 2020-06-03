@@ -24,7 +24,7 @@ class Uninstall extends Command {
 		if (file_exists(__ROOT__ . '/production.lock'))
 			throw new \RuntimeException('Can not run uninstall script because production.lock exists.' . PHP_EOL);
 
-		if (count($argv) < 1 || $argv[0] !== 'y') {
+		if (count($argv) < 1 || $argv[0] !== '-y') {
 			printf('THIS METHOD WILL EMPTY DATABASE \'%s\', ARE YOU ABSOLUTELY SURE? [y/n]' . PHP_EOL, $kernel->getConfig()->db_database);
 			$line = trim(fgets(STDIN));
 
